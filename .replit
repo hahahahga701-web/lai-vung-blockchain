@@ -1,0 +1,7 @@
+# Replit config
+run = "python run.py"
+modules = ["python-3.13"]
+
+[nix]
+channel = "stable-23_11"
+packages = ["python313"]

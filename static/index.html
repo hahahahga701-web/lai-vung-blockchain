@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="vi" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Truy xuất nguồn gốc Quýt Hồng Lai Vung</title>
+    <meta name="description" content="Hệ thống truy xuất nguồn gốc nông sản kết hợp Blockchain & AI giúp theo dõi hành trình của Quýt Hồng Lai Vung từ nông trại đến người tiêu dùng.">
+    <!-- Font Chữ Premium -->
+    <link rel="stylesheet" href="/static/css/styles.css?v=1.3.0">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Thư viện tạo QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Thư viện giải mã QR Code -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    
+    <!-- Three.js for 3D Model Rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- GSAP for Smooth Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Intro Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;600&display=swap" rel="stylesheet">
+    <!-- ── ORANGE-07 Intro Overlay Styles ── -->
+    <style>
+      :root {
+        --intro-amber:#E8A020;--intro-teal:#1CCFB0;--intro-bg:#05070F;
+        --intro-mono:'Share Tech Mono',monospace;
+        --intro-display:'Orbitron',monospace;
+        --intro-body:'Rajdhani',sans-serif;
+      }
+      #intro-overlay{position:fixed;inset:0;z-index:99999;background:var(--intro-bg);transition:opacity .8s cubic-bezier(.22,1,.36,1),visibility .8s}
+      #intro-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+      #intro-rain{position:fixed;inset:0;opacity:.13;pointer-events:none;z-index:0}
+      #intro-overlay::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99;
+        background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.12) 2px,rgba(0,0,0,0.12) 4px)}
+      #intro-app{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;transition:opacity .5s;font-family:var(--intro-mono);user-select:none}
+      #intro-app.hidden{opacity:0;pointer-events:none}
+      #stage-label{text-align:center;margin-bottom:18px}
+      #stage-num{font-family:var(--intro-display);font-size:9px;letter-spacing:.38em;color:var(--intro-amber);opacity:.65;margin-bottom:6px}
+      #stage-name{font-family:var(--intro-body);font-size:26px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#d0ddf0;transition:opacity .15s;min-height:34px;line-height:1.2}
+      #stage-sub{font-family:var(--intro-mono);font-size:9px;letter-spacing:.22em;color:rgba(28,207,176,0.55);margin-top:5px;transition:opacity .15s;min-height:13px}
+      #centre{display:flex;align-items:center}
+      .intro-hud{width:185px;font-size:9px;line-height:2.05;color:rgba(180,200,225,.6);font-family:var(--intro-mono)}
+      .intro-hud-left{margin-right:18px;text-align:right}
+      .intro-hud-right{margin-left:18px}
+      .intro-hud-row{display:flex;align-items:center;gap:7px}
+      .intro-hud-left .intro-hud-row{justify-content:flex-end}
+      .intro-hud-lbl{font-size:7.5px;letter-spacing:.05em;text-transform:uppercase;opacity:.5;white-space:nowrap}
+      .intro-hud-track{width:58px;height:3px;flex-shrink:0;background:rgba(255,255,255,0.06);border:.4px solid rgba(255,255,255,0.1);border-radius:2px;overflow:hidden}
+      .intro-hud-fill{height:100%;width:0%;border-radius:2px;transition:width .7s ease}
+      .intro-hud-fill.amber{background:var(--intro-amber);box-shadow:0 0 5px var(--intro-amber)}
+      .intro-hud-fill.teal{background:var(--intro-teal);box-shadow:0 0 5px var(--intro-teal)}
+      #frame-wrap{position:relative;width:310px;height:310px;flex-shrink:0}
+      .intro-cb{position:absolute;width:24px;height:24px;border-color:var(--intro-amber);border-style:solid;z-index:4}
+      .intro-cb.tl{top:0;left:0;border-width:2px 0 0 2px}
+      .intro-cb.tr{top:0;right:0;border-width:2px 2px 0 0}
+      .intro-cb.bl{bottom:0;left:0;border-width:0 0 2px 2px}
+      .intro-cb.br{bottom:0;right:0;border-width:0 2px 2px 0}
+      #intro-scan-line{position:absolute;left:2px;right:2px;height:1.5px;top:2px;background:linear-gradient(90deg,transparent,var(--intro-teal),transparent);box-shadow:0 0 10px var(--intro-teal);z-index:5;animation:intro-scan 1s linear infinite}
+      @keyframes intro-scan{from{top:2px}to{top:306px}}
+      #intro-img-box{position:absolute;inset:12px;border:1px solid rgba(232,160,32,0.18);overflow:hidden;background:#06080f}
+      #intro-panel-img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+      #intro-img-box::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 40%,rgba(4,6,14,.6) 100%);pointer-events:none}
+      #intro-bin{position:absolute;right:-158px;top:0;font-size:7px;line-height:1.6;letter-spacing:.05em;color:rgba(232,160,32,0.25);pointer-events:none;font-family:var(--intro-mono)}
+      #intro-data-wrap{position:absolute;right:-158px;bottom:22px;width:134px}
+      #intro-data-lbl{font-size:8px;letter-spacing:.15em;color:rgba(180,200,225,.45);margin-bottom:4px;font-family:var(--intro-mono)}
+      #intro-data-track{height:5px;background:rgba(255,255,255,0.05);border:.4px solid rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;position:relative}
+      #intro-data-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,rgba(116,60,4,1),var(--intro-amber));box-shadow:0 0 8px var(--intro-amber);transition:width .6s ease}
+      #intro-data-pct{position:absolute;right:0;top:-14px;font-family:var(--intro-display);font-size:9px;font-weight:700;color:var(--intro-amber)}
+      #intro-bottom-strip{display:flex;align-items:center;justify-content:center;gap:28px;margin-top:20px;font-size:9px;letter-spacing:.2em;color:rgba(180,200,225,.28);text-transform:uppercase;font-family:var(--intro-mono)}
+      .intro-hl{color:var(--intro-amber)}
+      #intro-status-lbl{transition:color .4s}
+      #intro-status-lbl.alive{color:var(--intro-teal)}
+      #intro-skip{position:fixed;bottom:24px;right:28px;z-index:100000;font-size:9px;letter-spacing:.2em;color:rgba(180,200,225,.2);cursor:pointer;text-transform:uppercase;transition:color .3s;font-family:var(--intro-mono)}
+      #intro-skip:hover{color:var(--intro-amber)}
+      #intro-flash{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:100001;transition:opacity .06s}
+      /* Life Screen */
+      #life-screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100002;opacity:0;pointer-events:none;transition:opacity .9s ease;background:radial-gradient(ellipse at 50% 0%,rgba(180,100,0,0.2) 0%,var(--intro-bg) 60%)}
+      #life-screen.show{opacity:1;pointer-events:all}
+      #la-title{font-family:var(--intro-display);font-size:clamp(38px,6.5vw,84px);font-weight:900;letter-spacing:.22em;color:var(--intro-amber);text-align:center;text-shadow:0 0 60px rgba(232,160,32,.55),0 0 120px rgba(232,160,32,.2);animation:intro-pg 2.5s ease-in-out infinite;opacity:0;transform:translateY(14px);transition:opacity .9s .2s,transform .9s .2s}
+      #life-screen.show #la-title{opacity:1;transform:translateY(0)}
+      @keyframes intro-pg{0%,100%{text-shadow:0 0 50px rgba(232,160,32,.5),0 0 100px rgba(232,160,32,.15)}50%{text-shadow:0 0 80px rgba(232,160,32,.9),0 0 200px rgba(232,160,32,.35)}}
+      #la-sub{font-family:var(--intro-mono);font-size:16px;letter-spacing:.4em;color:rgba(232,160,32,.85);margin-top:12px;text-align:center;opacity:0;transition:opacity .9s .85s}
+      #life-screen.show #la-sub{opacity:1}
+      #la-detail{font-family:var(--intro-mono);font-size:12px;letter-spacing:.2em;color:rgba(28,207,176,.75);margin-top:8px;text-align:center;opacity:0;transition:opacity .9s 1.1s}
+      #life-screen.show #la-detail{opacity:1}
+      #hb-row{display:flex;align-items:center;gap:0;margin-top:34px;opacity:0;transition:opacity .9s 1.4s;width:min(580px,68vw)}
+      #life-screen.show #hb-row{opacity:1}
+      .hb-line{flex:1;height:1.5px;background:rgba(28,207,176,0.45)}
+      #hb-path{stroke-dasharray:200;stroke-dashoffset:200}
+      #life-screen.show #hb-path{animation:intro-dhb 1s 1.5s ease forwards}
+      @keyframes intro-dhb{to{stroke-dashoffset:0}}
+      #enter-btn{margin-top:40px;padding:13px 52px;background:transparent;border:1px solid var(--intro-amber);color:var(--intro-amber);font-family:var(--intro-display);font-size:11px;letter-spacing:.28em;text-transform:uppercase;cursor:pointer;opacity:0;transition:opacity .9s 2s,background .3s,box-shadow .3s}
+      #life-screen.show #enter-btn{opacity:1}
+      #enter-btn:hover{background:rgba(232,160,32,.08);box-shadow:0 0 22px rgba(232,160,32,.25)}
+      /* Main content reveal */
+      .app-container{transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+      .app-container.intro-hidden{opacity:0;transform:scale(.98)}
+
+      /* ── MOBILE RESPONSIVE INTRO ── */
+      @media (max-width: 700px) {
+        /* Frame: scale to fit viewport */
+        #frame-wrap{
+          width: min(78vw, 260px);
+          height: min(78vw, 260px);
+        }
+
+        /* Hide desktop-only side HUD & decorations that overflow */
+        .intro-hud-left,
+        .intro-hud-right,
+        #intro-bin,
+        #intro-data-wrap{
+          display: none !important;
+        }
+
+        /* Stack centre column (just the frame) */
+        #centre{
+          flex-direction: column;
+          align-items: center;
+          gap: 0;
+        }
+
+        /* Tighten stage label */
+        #stage-label{margin-bottom: 12px}
+        #stage-name{font-size: 17px; letter-spacing: .06em; min-height: 26px}
+        #stage-num{font-size: 8px; letter-spacing: .25em}
+        #stage-sub{font-size: 8px; letter-spacing: .14em; min-height: 11px}
+
+        /* Bottom strip: wrap tightly */
+        #intro-bottom-strip{
+          gap: 10px;
+          font-size: 7.5px;
+          letter-spacing: .1em;
+          flex-wrap: wrap;
+          padding: 0 12px;
+          margin-top: 14px;
+          text-align: center;
+        }
+
+        /* Skip button: easier tap target */
+        #intro-skip{
+          bottom: 16px;
+          right: 16px;
+          font-size: 8px;
+          padding: 8px 12px;
+          background: rgba(5,7,15,.55);
+          border: 1px solid rgba(232,160,32,.15);
+          border-radius: 4px;
+          letter-spacing: .15em;
+        }
+
+        /* Life screen: compact for mobile */
+        #la-title{
+          font-size: clamp(28px, 9vw, 48px);
+          letter-spacing: .14em;
+        }
+        #la-sub{
+          font-size: 10px;
+          letter-spacing: .18em;
+          padding: 0 16px;
+          line-height: 1.7;
+        }
+        #la-detail{
+          font-size: 9px;
+          letter-spacing: .1em;
+          padding: 0 16px;
+          line-height: 1.6;
+        }
+        #hb-row{
+          margin-top: 22px;
+          width: 88vw;
+        }
+        #hb-row svg{width: 80px; height: 30px}
+        #enter-btn{
+          margin-top: 28px;
+          padding: 12px 32px;
+          font-size: 10px;
+          letter-spacing: .2em;
+          width: min(260px, 72vw);
+        }
+      }
+
+      /* Extra small phones */
+      @media (max-width: 400px) {
+        #frame-wrap{
+          width: min(72vw, 220px);
+          height: min(72vw, 220px);
+        }
+        #stage-name{font-size: 14px}
+        #intro-bottom-strip{font-size: 6.5px; gap: 6px}
+      }
+    </style>
+</head>
+<body>
+    <!-- ── ORANGE-07 Intro Overlay ── -->
+    <div id="intro-overlay">
+      <canvas id="intro-rain"></canvas>
+      <div id="intro-app">
+        <div id="stage-label">
+          <div id="stage-num">STAGE 01 / 09</div>
+          <div id="stage-name">THIẾT LẬP KHỐI NGUỒN</div>
+          <div id="stage-sub">Genesis Init</div>
+        </div>
+        <div id="centre">
+          <div class="intro-hud intro-hud-left">
+            <div class="intro-hud-row"><span class="intro-hud-lbl">Genesis Block</span><div class="intro-hud-track"><div class="intro-hud-fill amber" id="h0"></div></div></div>
+            <div class="intro-hud-row"><span class="intro-hud-lbl">Ledger Stream</span><div class="intro-hud-track"><div class="intro-hud-fill amber" id="h1"></div></div></div>
+            <div class="intro-hud-row"><span class="intro-hud-lbl">SHA-256 Hash</span><div class="intro-hud-track"><div class="intro-hud-fill amber" id="h2"></div></div></div>
+            <div class="intro-hud-row"><span class="intro-hud-lbl">Smart Contract</span><div class="intro-hud-track"><div class="intro-hud-fill amber" id="h3"></div></div></div>
+            <div class="intro-hud-row"><span class="intro-hud-lbl">Node Network</span><div class="intro-hud-track"><div class="intro-hud-fill amber" id="h4"></div></div></div>
+            <div class="intro-hud-row"><span class="intro-hud-lbl">Eco Sensor</span><div class="intro-hud-track"><div class="intro-hud-fill teal" id="h5"></div></div></div>
+            <div class="intro-hud-row"><span class="intro-hud-lbl">Trace Protocol</span><div class="intro-hud-track"><div class="intro-hud-fill teal" id="h6"></div></div></div>
+          </div>
+          <div id="frame-wrap">
+            <div class="intro-cb tl"></div><div class="intro-cb tr"></div>
+            <div class="intro-cb bl"></div><div class="intro-cb br"></div>
+            <div id="intro-scan-line"></div>
+            <div id="intro-img-box"><img id="intro-panel-img" src="" alt=""/></div>
+            <div id="intro-bin">0101010011110<br>1100010101010<br>0011101010011<br>1010100100110</div>
+            <div id="intro-data-wrap">
+              <div id="intro-data-lbl">DATA INCOMING</div>
+              <div id="intro-data-track">
+                <div id="intro-data-fill"></div>
+                <div id="intro-data-pct">0%</div>
+              </div>
+            </div>
+          </div>
+          <div class="intro-hud intro-hud-right" style="opacity:0;pointer-events:none;width:185px"></div>
+        </div>
+        <div id="intro-bottom-strip">
+          <span>AI ID: <span class="intro-hl">ORANGE-07</span></span>
+          <span style="opacity:.2">|</span>
+          <span>LAI VUNG BLOCKCHAIN</span>
+          <span style="opacity:.2">|</span>
+          <span>STATUS: <span id="intro-status-lbl">GENESIS INIT</span></span>
+        </div>
+      </div>
+      <div id="intro-flash"></div>
+      <div id="intro-skip">[ SKIP INTRO ]</div>
+      <div id="life-screen">
+        <div id="la-title">LAI VUNG TRACE</div>
+        <div id="la-sub">Thẩm định chuỗi khối &nbsp;·&nbsp; Minh bạch sản xuất &nbsp;·&nbsp; Lai Vung Blockchain</div>
+        <div id="la-detail">CONSCIOUSNESS LEVEL: FULL &nbsp;·&nbsp; ALL NODES VERIFIED &nbsp;·&nbsp; LEDGER SECURED</div>
+        <div id="hb-row">
+          <div class="hb-line"></div>
+          <svg width="120" height="44" viewBox="0 0 120 44">
+            <path id="hb-path" d="M0,22 L28,22 L38,6 L46,38 L54,12 L62,32 L70,22 L120,22"
+              fill="none" stroke="#1CCFB0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="hb-line"></div>
+        </div>
+        <button id="enter-btn">KHÁM PHÁ &nbsp;→&nbsp; ENTER</button>
+      </div>
+    </div>
+
+    <div class="app-container intro-hidden">
+        <!-- HEADER -->
+        <header>
+            <div class="logo-section">
+                <button id="mobile-menu-toggle" class="mobile-menu-btn" title="Mở menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="logo-icon">
+                    <img src="/static/logo.webp" alt="Logo">
+                </div>
+                <div>
+                    <h1>LAI VUNG TRACE</h1>
+                    <span>Blockchain & AI Traceability Network</span>
+                </div>
+            </div>
+            <nav id="main-nav" class="desktop-nav">
+                <button class="nav-btn active" data-tab="farmer">
+                    <i class="fa-solid fa-tractor"></i> Nông Dân / HTX
+                </button>
+                <button class="nav-btn" data-tab="transporter">
+                    <i class="fa-solid fa-truck"></i> Vận Chuyển
+                </button>
+                <button class="nav-btn" data-tab="distributor">
+                    <i class="fa-solid fa-store"></i> Nhà Phân Phối
+                </button>
+                <button class="nav-btn" data-tab="consumer">
+                    <i class="fa-solid fa-qrcode"></i> Người Tiêu Dùng
+                </button>
+                <button class="nav-btn" data-tab="explorer">
+                    <i class="fa-solid fa-cubes"></i> Blockchain Explorer
+                </button>
+                <!-- Light/Dark Mode Toggle -->
+                <button id="theme-toggle-btn" class="nav-btn" style="margin-left: auto; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);" title="Chuyển đổi chế độ sáng/tối">
+                    <i class="fa-solid fa-moon"></i> <span id="theme-text">Dark</span>
+                </button>
+            </nav>
+        </header>
+
+        <!-- MAIN WORKSPACE -->
+        <main>
+            
+            <!-- TAB 1: FARMER PANEL -->
+            <section id="farmer" class="tab-content active">
+                <h2 class="section-title"><i class="fa-solid fa-seedling" style="color: var(--accent-orange)"></i> Giai đoạn 1: Nông dân / Hợp tác xã</h2>
+                <p class="section-desc">Khai báo lô hàng, giống cây trồng, nhật ký bón phân, phun thuốc bảo vệ thực vật hữu cơ và ngày thu hoạch. Nông dân có thể nhập liệu bằng giọng nói tiếng Việt.</p>
+
+                <div class="grid-2col">
+                    <!-- Left: Farmer Form -->
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-file-invoice"></i> Nhật ký canh tác & thu hoạch
+                        </div>
+                        <form id="farmer-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="farmer-lot-id">Mã lô hàng (Lot ID)</label>
+                                    <input type="text" id="farmer-lot-id" class="form-control" placeholder="Ví dụ: QL-01" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="farmer-area-code">Mã số vùng trồng (Planting Area Code)</label>
+                                    <input type="text" id="farmer-area-code" class="form-control" placeholder="Ví dụ: VUNG-LAI-001" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="farmer-variety">Loại giống</label>
+                                    <input type="text" id="farmer-variety" class="form-control" placeholder="Quýt Hồng Lai Vung" value="Quýt Hồng Lai Vung" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="farmer-quality">Đánh giá Chất lượng</label>
+                                    <select id="farmer-quality" class="form-control" required>
+                                        <option value="">-- Chọn chất lượng --</option>
+                                        <option value="Đạt chuẩn VietGAP">Đạt chuẩn VietGAP</option>
+                                        <option value="Loại 1 (Cao cấp)">Loại 1 (Cao cấp)</option>
+                                        <option value="Loại 2">Loại 2</option>
+                                        <option value="Đạt chuẩn Xuất khẩu">Đạt chuẩn Xuất khẩu</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="farmer-planting-date">Ngày trồng</label>
+                                    <input type="date" id="farmer-planting-date" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="farmer-harvest-date">Ngày thu hoạch</label>
+                                    <input type="date" id="farmer-harvest-date" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="farmer-last-spray-date">Ngày phun thuốc cuối cùng (Optional)</label>
+                                    <input type="date" id="farmer-last-spray-date" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="farmer-brix">Chỉ số độ ngọt Brix (Optional)</label>
+                                    <input type="number" step="0.1" min="0" max="30" id="farmer-brix" class="form-control" placeholder="Ví dụ: 12.5">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="farmer-fertilizer">Nhật ký Phân bón (với Autocomplete)</label>
+                                <div style="position: relative;">
+                                    <input type="text" id="farmer-fertilizer" class="form-control" placeholder="Nhập để tìm kiếm phân bón VietGAP..." required>
+                                    <div id="farmer-fertilizer-suggestions" class="autocomplete-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-top: none; max-height: 150px; overflow-y: auto; z-index: 100; border-radius: 0 0 8px 8px;"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="farmer-pesticide">Thuốc Bảo vệ thực vật BVTV (với Autocomplete)</label>
+                                <div style="position: relative;">
+                                    <input type="text" id="farmer-pesticide" class="form-control" placeholder="Nhập để tìm kiếm thuốc BVTV VietGAP..." required>
+                                    <div id="farmer-pesticide-suggestions" class="autocomplete-suggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-top: none; max-height: 150px; overflow-y: auto; z-index: 100; border-radius: 0 0 8px 8px;"></div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="farmer-yield">Sản lượng (kg)</label>
+                                    <input type="number" step="0.1" id="farmer-yield" class="form-control" placeholder="Ví dụ: 1500" required>
+                                </div>
+                            </div>
+
+                            <!-- PHI Status Alert -->
+                            <div id="farmer-phi-alert" style="display: none; padding: 1rem; margin: 1rem 0; border-radius: 8px; border-left: 4px solid var(--error-red); background: rgba(255,23,68,0.08); color: var(--text-primary);">
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+                                    <i class="fa-solid fa-triangle-exclamation" style="color: var(--error-red);"></i>
+                                    <strong id="farmer-phi-status">Đang tính toán...</strong>
+                                </div>
+                                <p id="farmer-phi-message" style="font-size: 0.9rem; margin: 0;"></p>
+                            </div>
+
+                            <!-- Post-Harvest Processing Checklist -->
+                            <div style="margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border-glow); border-radius: 8px; background: rgba(255,122,0,0.03);">
+                                <label style="display: block; font-weight: 600; margin-bottom: 1rem; color: var(--accent-orange);">
+                                    <i class="fa-solid fa-clipboard-check"></i> Xử lý sau thu hoạch
+                                </label>
+                                <div class="form-group" style="margin: 0.75rem 0;">
+                                    <input type="checkbox" id="farmer-washing" class="form-control" style="width: auto; margin-right: 8px;">
+                                    <label for="farmer-washing" style="display: inline; font-weight: 500;">✓ Đã rửa làm sạch</label>
+                                </div>
+                                <div class="form-group" style="margin: 0.75rem 0;">
+                                    <input type="checkbox" id="farmer-sorting" class="form-control" style="width: auto; margin-right: 8px;">
+                                    <label for="farmer-sorting" style="display: inline; font-weight: 500;">✓ Phân loại kích cỡ (Size)</label>
+                                </div>
+                                <div class="form-group" style="margin: 0.75rem 0;">
+                                    <input type="checkbox" id="farmer-packaging" class="form-control" style="width: auto; margin-right: 8px;">
+                                    <label for="farmer-packaging" style="display: inline; font-weight: 500;">✓ Đóng thùng carton có lỗ thông khí</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                                <i class="fa-solid fa-circle-check"></i> Đăng ký Lô hàng & Đóng dấu Blockchain
+                            </button>
+                        </form>
+                        
+                        <!-- Tem QR Code In Ấn Canh Tác -->
+                        <div id="farmer-qr-label" style="display: none; margin-top: 2rem; text-align: center; border: 2px dashed var(--accent-orange-glow); padding: 1.5rem; border-radius: 12px; background: rgba(255, 122, 0, 0.02);">
+                            <h4 style="color: var(--accent-orange); margin-bottom: 0.5rem;"><i class="fa-solid fa-print"></i> TEM QR CODE LÔ HÀNG ĐÃ ĐƯỢC TẠO</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Nông dân dán tem QR này lên thùng/hộp sản phẩm. Quét nhãn để kiểm tra dữ liệu trước khi bàn giao.</p>
+                            <div style="background: white; width: 146px; height: 146px; margin: 0 auto; padding: 10px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" id="farmer-label-qr-container"></div>
+                            <div style="font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; margin: 10px 0; color: var(--accent-gold); font-weight: bold;" id="farmer-label-lot-id">Mã lô: -</div>
+                            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap;">
+                                <button id="btn-print-simulation" type="button" class="btn btn-secondary" style="width: auto; padding: 8px 16px; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-print"></i> Mô phỏng In Tem
+                                </button>
+                                <button id="btn-download-qr" type="button" class="btn btn-secondary" style="width: auto; padding: 8px 16px; font-size: 0.85rem; background: rgba(255, 184, 0, 0.1); border: 1px solid var(--accent-gold); color: var(--accent-gold);">
+                                    <i class="fa-solid fa-download"></i> Tải ảnh QR
+                                </button>
+                                <button id="btn-scan-as-consumer-now" type="button" class="btn btn-primary" style="width: auto; padding: 8px 16px; font-size: 0.85rem;">
+                                    <i class="fa-solid fa-eye"></i> Quét xem thử QR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: AI Voice Assistant -->
+                    <div class="card ai-voice-card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-microphone-lines" style="color: var(--accent-orange)"></i> Trợ lý Giọng nói AI (AI Voice-to-Text)
+                        </div>
+                        <p class="section-desc" style="font-size: 0.9rem; margin-bottom: 1rem;">Nhấp giữ nút ghi âm để nhập nhật ký canh tác bằng giọng nói tiếng Việt tự nhiên hoặc chọn các kịch bản mẫu bên dưới.</p>
+                        
+                        <div class="voice-recording-area">
+                            <button class="mic-btn" id="voice-mic-btn" title="Bấm để ghi âm">
+                                <i class="fa-solid fa-microphone"></i>
+                            </button>
+                            <div class="voice-status" id="voice-status">Nhấp nút micro để ghi âm hoặc bấm mẫu dưới đây...</div>
+                        </div>
+
+                        <!-- Scenarios for simulation -->
+                        <div class="voice-scenarios">
+                            <label style="font-size: 0.75rem; font-weight: bold; text-transform: uppercase; color: var(--text-secondary);">Mẫu Kịch Bản Giọng Nói Tiếng Việt:</label>
+                            <div class="scenario-chips">
+                                <div class="scenario-chip" data-text="Mã lô QL-01, Vùng trồng VUNG-LAI-001, Giống Quýt Hồng, Trồng ngày 12 tháng 10 năm 2025, Thu hoạch ngày 15 tháng 05 năm 2026, Sản lượng 1500 kg, Chất lượng Xuất khẩu Loại 1, Bón phân NPK hữu cơ">
+                                    🎤 Thu hoạch lô QL-01
+                                </div>
+                                <div class="scenario-chip" data-text="Mã lô QT-88, Vùng trồng VUNG-LAI-002, Giống Quýt Đường, Trồng ngày 10 tháng 09 năm 2025, Bón phân chuồng hữu cơ, Phun thuốc nano bạc">
+                                    🎤 Gieo trồng lô QT-88
+                                </div>
+                                <div class="scenario-chip" data-text="Mã lô LOT-456, Vùng trồng VUNG-LAI-003, Giống Quýt Hồng, Thu hoạch ngày 30 tháng 05 năm 2026, Sản lượng ba phẩy năm tấn, Chất lượng Loại 2, Phân bón kali sinh học hữu cơ">
+                                    🎤 Sản lượng 3.5 tấn LOT-456
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Audio Level Indicator -->
+                        <div id="voice-audio-level" style="display: none; margin-bottom: 1rem; padding: 8px 12px; border-radius: 8px; background: rgba(255, 122, 0, 0.05); border: 1px solid rgba(255, 122, 0, 0.2);">
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; font-weight: 500;">📊 Mức âm thanh:</div>
+                            <div id="voice-audio-bar" style="width: 100%; height: 6px; background: rgba(255, 122, 0, 0.1); border-radius: 3px; overflow: hidden;">
+                                <div id="voice-audio-fill" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-orange), #ff5c00); transition: width 0.1s linear; border-radius: 3px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- AI Feedback Message (New UI Component) -->
+                        <div id="voice-ai-feedback-container" style="display: none; margin-top: 1.5rem; padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.02); transition: var(--transition-smooth);">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 0.75rem;">
+                                <div id="voice-feedback-icon" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 122, 0, 0.1); overflow: hidden;">
+                                    <img src="/static/chatbot.webp" alt="Trợ lý" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                </div>
+                                <span style="font-weight: 600; font-size: 0.95rem; color: var(--text-primary);">Trợ lý Lai Vung Trace</span>
+                                <span id="voice-confidence-score" style="margin-left: auto; font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;"></span>
+                                <span id="voice-completion-badge" class="badge" style="margin-left: 8px;">Chờ phân tích</span>
+                            </div>
+                            <p id="voice-feedback-msg" style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.75rem; line-height: 1.4; font-style: italic;">
+                                ...
+                            </p>
+                            <div id="voice-missing-fields-box" style="display: none; font-size: 0.8rem; background: rgba(255, 23, 68, 0.05); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--error-red);">
+                                <strong style="color: var(--error-red); display: block; margin-bottom: 4px;"><i class="fa-solid fa-triangle-exclamation"></i> Thông tin còn thiếu:</strong>
+                                <span id="voice-missing-fields-list" style="color: var(--text-secondary);"></span>
+                            </div>
+                        </div>
+
+                        <!-- Raw Text Transcription Output -->
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Văn bản nhận diện giọng nói (Speech Output):</label>
+                            <textarea id="voice-raw-text" class="form-control" rows="3" placeholder="Văn bản sau khi dịch từ giọng nói sẽ hiển thị ở đây..." style="font-size: 0.9rem;"></textarea>
+                        </div>
+                        
+                        <!-- Diagnostic Prompt Info -->
+                        <div class="tx-title" style="margin-top: 1rem;">AI Pipeline Diagnostic:</div>
+                        <div class="ai-diagnostics" id="ai-diagnostics">
+                            Hệ thống AI đang chờ tín hiệu...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: TRANSPORTER PANEL -->
+            <section id="transporter" class="tab-content">
+                <h2 class="section-title"><i class="fa-solid fa-truck-ramp-box" style="color: var(--accent-orange)"></i> Giai đoạn 2: Đơn vị vận chuyển</h2>
+                <p class="section-desc">Cập nhật thông tin giao nhận, thời gian vận chuyển từ nhà vườn đến nhà kho và cảm biến nhiệt độ xe lạnh bảo quản chất lượng quýt.</p>
+
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="card-title">
+                        <i class="fa-solid fa-route"></i> Nhật ký hành trình vận chuyển
+                    </div>
+                    
+                    <!-- QR Code Simulator Section -->
+                    <div id="trans-scanner-section" style="text-align: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+                        <div class="scanner-viewfinder" id="trans-viewfinder">
+                            <video id="trans-video" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; display: none;"></video>
+                            <div class="scanner-laser" id="trans-laser" style="display: none;"></div>
+                            <div id="trans-scanner-placeholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                                <i class="fa-solid fa-camera" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: 0.75rem; display: block;"></i>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">Chọn nút quét camera hoặc tải ảnh QR lên</span>
+                            </div>
+                            <div id="trans-scanner-success" style="display: none;">
+                                <i class="fa-solid fa-circle-check" style="font-size: 2.5rem; color: var(--success-green); margin-bottom: 0.75rem; display: block;"></i>
+                                <span style="font-size: 0.9rem; color: var(--text-primary); font-weight: bold;" id="trans-scanned-lot-display">Đã nhận diện lô: -</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <button id="btn-trans-scan-cam" type="button" class="btn btn-primary" style="width: auto; padding: 10px 20px;">
+                                <i class="fa-solid fa-camera"></i> QUÉT BẰNG CAMERA
+                            </button>
+                            <button id="btn-trans-scan-file" type="button" class="btn btn-secondary" style="width: auto; padding: 10px 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary);">
+                                <i class="fa-solid fa-upload"></i> TẢI ẢNH QR ĐỂ QUÉT
+                            </button>
+                        </div>
+                        <input type="file" id="trans-file-input" accept="image/*" style="display: none;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            Hoặc chọn mã lô từ danh sách nếu không quét:
+                            <select id="trans-lot-select" class="form-control" style="max-width: 250px; display: inline-block; margin-left: 10px; height: 35px; padding: 5px 10px; font-size: 0.85rem; vertical-align: middle;">
+                                <option value="">-- Chọn lô quýt --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <form id="transporter-form" style="display: none;">
+                        <!-- Transport Unit Identification -->
+                        <div style="margin-bottom: 1.5rem; padding: 1rem; border: 1px solid var(--border-glow); border-radius: 8px; background: rgba(255,122,0,0.03);">
+                            <label style="display: block; font-weight: 600; margin-bottom: 1rem; color: var(--accent-orange);">
+                                <i class="fa-solid fa-id-card"></i> Thông tin Đơn vị vận chuyển
+                            </label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="trans-name">Tên Nhà xe / Công ty vận chuyển</label>
+                                    <input type="text" id="trans-name" class="form-control" placeholder="Ví dụ: Công ty Logistics Lai Vung" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="trans-plate">Biển số xe</label>
+                                    <input type="text" id="trans-plate" class="form-control" placeholder="Ví dụ: 50A-12345" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="trans-driver">Mã tài xế / Tên tài xế</label>
+                                <input type="text" id="trans-driver" class="form-control" placeholder="Ví dụ: DR-001 / Nguyễn Văn A" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="trans-pickup-date">Ngày giờ nhận hàng</label>
+                                <input type="datetime-local" id="trans-pickup-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trans-pickup-time">Thời gian nhận hàng (HH:MM)</label>
+                                <input type="time" id="trans-pickup-time" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="trans-eta">ETA - Dự kiến giờ giao</label>
+                                <input type="time" id="trans-eta" class="form-control" placeholder="Ví dụ: 16:30">
+                            </div>
+                            <div class="form-group">
+                                <label for="trans-delivery-date">Ngày giờ giao hàng (Thực tế)</label>
+                                <input type="datetime-local" id="trans-delivery-date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="trans-time">Thời gian di chuyển</label>
+                                <input type="text" id="trans-time" class="form-control" placeholder="Ví dụ: 4 giờ 30 phút" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="trans-condition">Trạng thái cảm quan khi nhận</label>
+                                <select id="trans-condition" class="form-control" required>
+                                    <option value="">-- Chọn trạng thái --</option>
+                                    <option value="Quýt tươi nguyên vẹn, không dập nát">Tươi ngon nguyên vẹn (Tốt)</option>
+                                    <option value="Quýt chín đều, dập nhẹ tỷ lệ < 2%">Dập nhẹ tỉ lệ thấp (< 2%)</option>
+                                    <option value="Bị dập nát nhiều, cần lọc loại bỏ">Hàng dập nát nhiều (Cảnh báo)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Temperature & Humidity Monitoring -->
+                        <div class="form-group">
+                            <label for="trans-temp" id="trans-temp-label">Nhiệt độ bảo quản cảm biến xe lạnh: 5 °C</label>
+                            <input type="range" id="trans-temp" min="-2" max="25" step="0.5" value="5" class="form-control" style="padding: 0; cursor: pointer;" required>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;">
+                                <span>Lạnh sâu (-2°C)</span>
+                                <span style="color: var(--success-green); font-weight: bold;">Tối ưu bảo quản (4°C - 8°C)</span>
+                                <span>Nhiệt độ thường (25°C)</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trans-humidity">Độ ẩm trung bình (%)</label>
+                            <input type="number" step="1" min="0" max="100" id="trans-humidity" class="form-control" placeholder="Ví dụ: 85">
+                        </div>
+
+                        <!-- Weight Tracking -->
+                        <div style="margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border-glow); border-radius: 8px; background: rgba(255,122,0,0.03);">
+                            <label style="display: block; font-weight: 600; margin-bottom: 1rem; color: var(--accent-orange);">
+                                <i class="fa-solid fa-weight"></i> Theo dõi cân nặng
+                            </label>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="trans-weight-pickup">Cân nặng khi nhận (kg)</label>
+                                    <input type="number" step="0.1" id="trans-weight-pickup" class="form-control" placeholder="Ví dụ: 1500">
+                                </div>
+                                <div class="form-group">
+                                    <label for="trans-weight-delivery">Cân nặng khi giao (kg)</label>
+                                    <input type="number" step="0.1" id="trans-weight-delivery" class="form-control" placeholder="Ví dụ: 1485">
+                                </div>
+                            </div>
+                            <div id="trans-weight-loss-info" style="padding: 0.75rem; border-radius: 6px; background: rgba(255,122,0,0.08); color: var(--text-secondary); font-size: 0.9rem; display: none;">
+                                <strong>Hao hụt:</strong> <span id="trans-weight-loss-value">-</span> kg (<span id="trans-weight-loss-pct">-</span>%)
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                            <i class="fa-solid fa-truck-moving"></i> Xác nhận Giao nhận & Lưu Blockchain
+                        </button>
+                    </form>
+                    <div id="trans-no-lot-msg" class="voice-status" style="padding: 2rem 0;">Vui lòng chọn hoặc tạo mới một lô hàng ở giai đoạn Nông dân để cập nhật thông tin vận chuyển.</div>
+                </div>
+            </section>
+
+            <!-- TAB 3: DISTRIBUTOR PANEL -->
+            <section id="distributor" class="tab-content">
+                <h2 class="section-title"><i class="fa-solid fa-store" style="color: var(--accent-orange)"></i> Giai đoạn 3: Nhà phân phối</h2>
+                <p class="section-desc">Khai báo ngày nhập kho đại siêu thị/chuỗi bán lẻ, điều kiện lưu trữ tại quầy kệ và ngày bắt đầu bày bán công khai đến khách hàng.</p>
+
+                <div class="card" style="max-width: 800px; margin: 0 auto;">
+                    <div class="card-title">
+                        <i class="fa-solid fa-warehouse"></i> Nhật ký kiểm kho & bày bán lẻ
+                    </div>
+                    
+                    <!-- QR Code Simulator Section -->
+                    <div id="dist-scanner-section" style="text-align: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+                        <div class="scanner-viewfinder" id="dist-viewfinder">
+                            <video id="dist-video" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover; display: none;"></video>
+                            <div class="scanner-laser" id="dist-laser" style="display: none;"></div>
+                            <div id="dist-scanner-placeholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                                <i class="fa-solid fa-camera" style="font-size: 2.5rem; color: var(--text-muted); margin-bottom: 0.75rem; display: block;"></i>
+                                <span style="font-size: 0.85rem; color: var(--text-secondary);">Chọn nút quét camera hoặc tải ảnh QR lên</span>
+                            </div>
+                            <div id="dist-scanner-success" style="display: none;">
+                                <i class="fa-solid fa-circle-check" style="font-size: 2.5rem; color: var(--success-green); margin-bottom: 0.75rem; display: block;"></i>
+                                <span style="font-size: 0.9rem; color: var(--text-primary); font-weight: bold;" id="dist-scanned-lot-display">Đã nhận diện lô: -</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                            <button id="btn-dist-scan-cam" type="button" class="btn btn-primary" style="width: auto; padding: 10px 20px;">
+                                <i class="fa-solid fa-camera"></i> QUÉT BẰNG CAMERA
+                            </button>
+                            <button id="btn-dist-scan-file" type="button" class="btn btn-secondary" style="width: auto; padding: 10px 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-primary);">
+                                <i class="fa-solid fa-upload"></i> TẢI ẢNH QR ĐỂ QUÉT
+                            </button>
+                        </div>
+                        <input type="file" id="dist-file-input" accept="image/*" style="display: none;">
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+                            Hoặc chọn mã lô từ danh sách nếu không quét:
+                            <select id="dist-lot-select" class="form-control" style="max-width: 250px; display: inline-block; margin-left: 10px; height: 35px; padding: 5px 10px; font-size: 0.85rem; vertical-align: middle;">
+                                <option value="">-- Chọn lô quýt --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <form id="distributor-form" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dist-warehouse-date">Ngày nhập kho</label>
+                                <input type="date" id="dist-warehouse-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dist-shelf-date">Ngày lên kệ (Optional)</label>
+                                <input type="date" id="dist-shelf-date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dist-storage">Điều kiện bảo quản tại kệ hàng</label>
+                                <input type="text" id="dist-storage" class="form-control" placeholder="Ví dụ: Tủ mát trưng bày 10 độ C, thoáng khí tốt" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dist-display">Điều kiện trưng bày (Optional)</label>
+                                <select id="dist-display" class="form-control">
+                                    <option value="">-- Chọn điều kiện --</option>
+                                    <option value="Bảo quản mát 10-15°C">Bảo quản mát 10-15°C</option>
+                                    <option value="Nhiệt độ phòng 20-25°C">Nhiệt độ phòng 20-25°C</option>
+                                    <option value="Lạnh 4-8°C">Lạnh 4-8°C (Lý tưởng)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dist-retail-date">Ngày bắt đầu bày bán lẻ</label>
+                                <input type="date" id="dist-retail-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dist-shelf-life">Khuyến cáo sử dụng trước ngày (Optional)</label>
+                                <input type="date" id="dist-shelf-life" class="form-control">
+                            </div>
+                        </div>
+
+                        <!-- Shelf Life Calculator -->
+                        <div style="margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border-glow); border-radius: 8px; background: rgba(255,122,0,0.03);">
+                            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--accent-orange);">
+                                <i class="fa-solid fa-calendar-days"></i> Tính toán hạn sử dụng (Shelf Life)
+                            </label>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Vui lòng chọn "Tính toán Shelf Life" để tự động xác định ngày hạn dùng được khuyến nghị.</p>
+                            <button type="button" id="btn-calculate-shelf-life" class="btn btn-secondary" style="width: auto; padding: 8px 16px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);">
+                                <i class="fa-solid fa-calculator"></i> Tính toán Shelf Life
+                            </button>
+                            <div id="dist-shelf-life-result" style="margin-top: 1rem; padding: 0.75rem; border-radius: 6px; background: rgba(0,230,118,0.08); display: none; color: var(--success-green); font-size: 0.9rem;">
+                                <strong>Kết quả:</strong> <span id="dist-shelf-life-message">-</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+                            <i class="fa-solid fa-box-open"></i> Xác nhận Nhập quầy & Ghi nhận Blockchain
+                        </button>
+                    </form>
+                    <div id="dist-no-lot-msg" class="voice-status" style="padding: 2rem 0;">Vui lòng chọn một lô hàng đã qua giai đoạn trước để tiếp tục cập nhật thông tin phân phối.</div>
+                </div>
+            </section>
+
+            <!-- TAB 4: CONSUMER PORTAL (QR SCAN) -->
+            <section id="consumer" class="tab-content">
+                <h2 class="section-title"><i class="fa-solid fa-qrcode" style="color: var(--accent-orange)"></i> Cổng tra cứu người tiêu dùng</h2>
+                <p class="section-desc">Quét mã QR Code trên thùng quýt hoặc nhập mã số Lô hàng để xác thực tính toàn vẹn của chuỗi cung ứng được kiểm soát bằng Blockchain.</p>
+
+                <div class="grid-2col">
+                    <!-- Left: Traceability Timeline -->
+                    <div class="card">
+                        <div class="card-title">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i> Kết quả truy vết dòng đời sản phẩm
+                        </div>
+                        
+                        <div class="lot-selector-bar" style="margin-bottom: 2rem;">
+                            <input type="text" id="consumer-search-input" class="form-control" placeholder="Nhập mã lô hàng (Ví dụ: QL-01)" style="flex: 1;">
+                            <button id="consumer-search-btn" class="btn btn-primary" style="width: auto; padding: 12px 24px;">
+                                <i class="fa-solid fa-search"></i> Tra Cứu
+                            </button>
+                        </div>
+
+                        <!-- Active Lot Trace Area -->
+                        <div id="trace-result-area" style="display: none;">
+                            <h3 style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                Vòng đời lô hàng: <strong id="trace-display-lot-id" style="color: var(--accent-orange)">QL-01</strong>
+                            </h3>
+                            
+                            <!-- Timeline -->
+                            <div class="timeline-container">
+                                <!-- Step 1: Farmer -->
+                                <div class="timeline-step completed" id="step-farmer">
+                                    <div class="timeline-icon"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <div class="timeline-title">🧑‍🌾 1. Hợp tác xã trồng trọt</div>
+                                            <span class="badge badge-verified" id="badge-farmer">Đã xác thực</span>
+                                        </div>
+                                        <div class="timeline-details">
+                                            <div class="detail-item"><span>Giống Quýt</span><strong id="det-variety">-</strong></div>
+                                            <div class="detail-item"><span>Ngày Trồng</span><strong id="det-planting-date">-</strong></div>
+                                            <div class="detail-item"><span>Ngày Thu Hoạch</span><strong id="det-harvest-date">-</strong></div>
+                                            <div class="detail-item"><span>Sản Lượng</span><strong id="det-yield">-</strong></div>
+                                            <div class="detail-item"><span>Phân Bón</span><strong id="det-fertilizer">-</strong></div>
+                                            <div class="detail-item"><span>Thuốc BVTV</span><strong id="det-pesticide">-</strong></div>
+                                            <div class="detail-item"><span>Chất Lượng</span><strong id="det-quality">-</strong></div>
+                                        </div>
+                                        <div class="timeline-hash" id="hash-farmer">
+                                            Hash gốc: 0x...
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Transport -->
+                                <div class="timeline-step" id="step-transport">
+                                    <div class="timeline-icon"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <div class="timeline-title">🚚 2. Vận chuyển logistics</div>
+                                            <span class="badge badge-pending" id="badge-transport">Chưa có thông tin</span>
+                                        </div>
+                                        <div class="timeline-details" id="det-transport-details" style="display: none;">
+                                            <div class="detail-item"><span>Ngày Nhận Hàng</span><strong id="det-pickup-date">-</strong></div>
+                                            <div class="detail-item"><span>Nhiệt Độ Cảm Biến</span><strong id="det-temp">-</strong></div>
+                                            <div class="detail-item"><span>Trạng Thái Cảm Quan</span><strong id="det-condition">-</strong></div>
+                                            <div class="detail-item"><span>Ngày Giao Hàng</span><strong id="det-delivery-date">-</strong></div>
+                                            <div class="detail-item"><span>Thời Gian Di Chuyển</span><strong id="det-transit-time">-</strong></div>
+                                        </div>
+                                        <div class="timeline-hash" id="hash-transport" style="display: none;">
+                                            Hash gốc: 0x...
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3: Distributor -->
+                                <div class="timeline-step" id="step-distributor">
+                                    <div class="timeline-icon"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-header">
+                                            <div class="timeline-title">🏬 3. Đại lý & Nhà phân phối</div>
+                                            <span class="badge badge-pending" id="badge-distributor">Chưa có thông tin</span>
+                                        </div>
+                                        <div class="timeline-details" id="det-distributor-details" style="display: none;">
+                                            <div class="detail-item"><span>Ngày Nhập Kho</span><strong id="det-warehouse-date">-</strong></div>
+                                            <div class="detail-item"><span>Điều Kiện Bày Bán</span><strong id="det-storage-condition">-</strong></div>
+                                            <div class="detail-item"><span>Ngày Bày Bán Lẻ</span><strong id="det-retail-date">-</strong></div>
+                                        </div>
+                                        <div class="timeline-hash" id="hash-distributor" style="display: none;">
+                                            Hash gốc: 0x...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="trace-no-search-msg" class="voice-status" style="padding: 4rem 0;">Vui lòng nhập mã lô hàng ở ô trên để tra cứu lịch sử hành trình chuỗi khối.</div>
+                    </div>
+
+                    <!-- Right: Blockchain Verification & QR Code -->
+                    <div>
+                        <div class="card consumer-verification-card">
+                            <div class="card-title" style="justify-content: center; border: none; padding: 0;">
+                                THẨM ĐỊNH BẢO MẬT CHUỖI KHỐI
+                            </div>
+                            
+                            <div id="verification-status-box" style="display: none;">
+                                <div id="status-badge" class="status-badge-large verified">
+                                    <i class="fa-solid fa-shield-halved"></i> AN TOÀN TUYỆT ĐỐI
+                                </div>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                                    Tất cả mã băm dữ liệu thực tế tại quầy khớp chính xác 100% với chữ ký mã hóa của nông dân và đơn vị logistics đã khóa trên sổ cái Blockchain.
+                                </p>
+                            </div>
+                            <div id="verification-status-empty" class="voice-status" style="margin: 1.5rem 0;">
+                                Hãy chọn một lô hàng để kiểm tra chữ ký số Blockchain.
+                            </div>
+
+                            <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 1px; display: block;">Mã QR truy xuất động sản phẩm</label>
+                            <div class="qr-placeholder" id="qr-code-container">
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 10px;">Mã QR tự động sinh sau khi tra cứu</span>
+                            </div>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary); display: block;" id="qr-url-text">url: https://lai-vung-network.onrender.com/product/LOT</span>
+                        </div>
+
+                        <!-- Hacker Security Lab -->
+                        <div class="card hacker-lab-card" id="hacker-lab" style="display: none;">
+                            <div class="card-title" style="color: var(--error-red);">
+                                <i class="fa-solid fa-bug"></i> Hacker Lab: Giả lập can thiệp SQL
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                                Thử nghiệm hack trực tiếp vào Cơ sở dữ liệu SQLite truyền thống của hệ thống để chỉnh sửa dữ liệu gốc (Ví dụ: Đổi phân bón sinh học thành chất cấm độc hại), không thông qua chuỗi khối.
+                            </p>
+                            <div class="hacker-options">
+                                <div class="form-group">
+                                    <label for="hacker-select-field">Chọn trường dữ liệu muốn tấn công sửa đổi:</label>
+                                    <select id="hacker-select-field" class="form-control">
+                                        <option value="fertilizer">Nhật ký Phân bón (Farmer)</option>
+                                        <option value="pesticide">Thuốc BVTV (Farmer)</option>
+                                        <option value="temperature">Nhiệt độ cảm biến xe lạnh (Transporter)</option>
+                                        <option value="variety">Loại giống cây trồng (Farmer)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hacker-fake-value">Giá trị giả mạo:</label>
+                                    <input type="text" id="hacker-fake-value" class="form-control" value="Phân bón hóa học cực độc bị cấm sử dụng">
+                                </div>
+                                <button id="hacker-tamper-btn" class="btn" style="background: rgba(255, 23, 68, 0.15); border: 1px solid var(--error-red); color: var(--error-red);">
+                                    <i class="fa-solid fa-skull-crossbones"></i> Chạy Giả Lập Tấn Công SQL
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: BLOCKCHAIN EXPLORER -->
+            <section id="explorer" class="tab-content">
+                <h2 class="section-title"><i class="fa-solid fa-cubes" style="color: var(--accent-orange)"></i> Trình khám phá Chuỗi khối (Blockchain Explorer)</h2>
+                <p class="section-desc">Theo dõi các giao dịch băm thời gian thực và cấu trúc khối liên kết bảo mật bằng mã băm SHA-256 trên chuỗi khối Lai Vung Trace Network.</p>
+
+                <div class="card">
+                    <div class="card-title" style="justify-content: space-between; align-items: center;">
+                        <span><i class="fa-solid fa-database"></i> Sổ cái phân tán công khai (Public Ledger)</span>
+                        <span id="blockchain-integrity-status" class="badge badge-verified"><i class="fa-solid fa-circle-check"></i> Chuỗi Toàn Vẹn</span>
+                    </div>
+
+                    <div class="blockchain-explorer-grid" id="blockchain-explorer-container">
+                        <!-- Blocks generated by JS will appear here -->
+                        <div class="voice-status" style="padding: 4rem 0;">Đang tải danh sách các khối trong chuỗi...</div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer style="margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            <p>© 2026 Lai Vung Trace Network. Dự án demo truy xuất nguồn gốc Quýt Hồng Lai Vung.</p>
+            <p style="margin-top: 5px; color: var(--text-secondary)">FastAPI + SQLite + SHA-256 Mock Blockchain Ledger + AI Voice Parser Integration</p>
+        </footer>
+    </div>
+
+    <!-- MINING OVERLAY LOADER -->
+    <div class="mining-overlay" id="mining-overlay">
+        <div class="mining-spinner"></div>
+        <div class="mining-text" id="mining-overlay-text">ĐANG ĐÀO KHỐI BLOCK MỚI...</div>
+        <div style="font-family: 'Courier New', Courier, monospace; color: var(--text-secondary); margin-top: 10px; font-size: 0.8rem;" id="mining-overlay-hash">
+            Hashing nonce...
+        </div>
+    </div>
+
+    <!-- ============ CHATBOT FLOATING WIDGET ============ -->
+
+    <!-- Zalo Contact Button -->
+    <a id="zalo-contact-btn" href="http://zaloapp.com/qr/p/119f0r2snqet5" target="_blank" rel="noopener noreferrer" title="Liên hệ qua Zalo: 0939992786">
+        <img src="/static/zalo.webp" alt="Zalo Contact" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+    </a>
+
+    <!-- Toggle button -->
+    <button id="chatbot-toggle-btn" title="Trợ lý AI Lai Vung">
+        <span class="chatbot-badge"></span>
+        <i class="fa-solid fa-comments"></i>
+    </button>
+
+    <!-- Chat window -->
+    <div id="chatbot-window" class="chatbot-hidden">
+        <!-- Header -->
+        <div class="chatbot-header">
+            <div class="chatbot-avatar"><img src="/static/chatbot.webp" alt="Chatbot Avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>
+            <div class="chatbot-header-info">
+                <div class="chatbot-header-name">Trợ lý Lai Vung Trace</div>
+                <div class="chatbot-header-status">Đang hoạt động</div>
+            </div>
+            <button id="chatbot-clear-btn" title="Xóa lịch sử chat">
+                <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button id="chatbot-close-btn" title="Đóng chat">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Context bar (hiện khi đang xem lô hàng) -->
+        <div id="chatbot-context-bar">
+            <i class="fa-solid fa-circle-info"></i>
+            <span id="chatbot-context-label">Đang tư vấn về lô hàng: -</span>
+        </div>
+
+        <!-- Messages -->
+        <div id="chatbot-messages">
+            <!-- Tin nhắn chào mừng sẽ được JS inject -->
+        </div>
+
+        <!-- Quick replies -->
+        <div class="chatbot-quick-replies" id="chatbot-quick-replies">
+            <button class="quick-reply-chip" data-msg="Mã lô hàng là gì?">🏷️ Mã lô hàng</button>
+            <button class="quick-reply-chip" data-msg="VietGAP là gì?">🌱 VietGAP</button>
+            <button class="quick-reply-chip" data-msg="Blockchain đảm bảo gì?">🔐 Blockchain</button>
+            <button class="quick-reply-chip" data-msg="Tóm tắt lô hàng này cho tôi">📋 Tóm tắt lô</button>
+        </div>
+
+        <!-- Input area -->
+        <div class="chatbot-input-area">
+            <textarea id="chatbot-input" rows="1" placeholder="Nhắn tin với trợ lý..."></textarea>
+            <button id="chatbot-send-btn" title="Gửi tin nhắn">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── ORANGE-07 Intro Script ── -->
+    <script>
+    (function(){
+      // --- Session gate: skip intro if already seen ---
+      const INTRO_FLAG = 'orange07_intro_seen';
+      const introSeen = sessionStorage.getItem(INTRO_FLAG);
+      const overlay = document.getElementById('intro-overlay');
+      const appContainer = document.querySelector('.app-container');
+
+      if(introSeen){
+        overlay.classList.add('hidden');
+        overlay.style.display='none';
+        appContainer.classList.remove('intro-hidden');
+        return;
+      }
+
+      // --- Rain canvas ---
+      const c=document.getElementById('intro-rain'),ctx=c.getContext('2d');
+      let W,H,drops;const ch='0123456789ABCDEF#@!$%&BLOCKCHAIN';
+      function resize(){W=c.width=innerWidth;H=c.height=innerHeight;drops=Array(Math.floor(W/16)).fill(1)}
+      resize();window.addEventListener('resize',resize);
+      const rainInterval=setInterval(()=>{
+        ctx.fillStyle='rgba(5,7,15,0.045)';ctx.fillRect(0,0,W,H);
+        ctx.fillStyle='#E8A020';ctx.font='11px monospace';
+        drops.forEach((y,i)=>{ctx.fillText(ch[Math.floor(Math.random()*ch.length)],i*16,y*16);if(y*16>H&&Math.random()>.975)drops[i]=0;drops[i]++;});
+      },55);
+
+      // --- Procedural stage images ---
+      function makeImg(hue, seed){
+        const S=300, cv=document.createElement('canvas');cv.width=S;cv.height=S;
+        const x=cv.getContext('2d');
+        // Dark background with gradient
+        const bg=x.createRadialGradient(S/2,S/2,30,S/2,S/2,S*.7);
+        bg.addColorStop(0,`hsl(${hue},40%,12%)`);
+        bg.addColorStop(1,`hsl(${hue+20},30%,4%)`);
+        x.fillStyle=bg;x.fillRect(0,0,S,S);
+        // Hex grid
+        x.strokeStyle=`hsla(${hue},60%,50%,0.08)`;x.lineWidth=0.5;
+        const hs=24;
+        for(let r=0;r<S/hs+2;r++)for(let c=0;c<S/hs+2;c++){
+          const cx=c*hs*1.5+(r%2)*hs*.75, cy=r*hs*.87;
+          x.beginPath();for(let a=0;a<6;a++){const angle=Math.PI/3*a-Math.PI/6;x.lineTo(cx+hs/2*Math.cos(angle),cy+hs/2*Math.sin(angle));}x.closePath();x.stroke();
+        }
+        // Circuit traces
+        x.strokeStyle=`hsla(${hue},80%,60%,0.2)`;x.lineWidth=1;
+        const rng=(s)=>{s=Math.sin(s)*43758.5453;return s-Math.floor(s);};
+        for(let t=0;t<6;t++){
+          x.beginPath();let px=rng(seed+t)*S,py=rng(seed+t+10)*S;x.moveTo(px,py);
+          for(let j=0;j<5;j++){const dir=Math.floor(rng(seed+t*7+j)*4);
+            if(dir===0)px+=40;else if(dir===1)py+=40;else if(dir===2)px-=40;else py-=40;
+            x.lineTo(px,py);}x.stroke();
+          // Node dots
+          x.fillStyle=`hsla(${hue},90%,65%,0.4)`;x.beginPath();x.arc(px,py,3,0,Math.PI*2);x.fill();
+        }
+        // Center glow
+        const cg=x.createRadialGradient(S/2,S/2,0,S/2,S/2,80);
+        cg.addColorStop(0,`hsla(${hue},90%,60%,0.15)`);cg.addColorStop(1,'transparent');
+        x.fillStyle=cg;x.fillRect(0,0,S,S);
+        // Data particles
+        for(let p=0;p<30;p++){
+          const px=rng(seed*3+p)*S,py=rng(seed*5+p)*S,sz=rng(seed*7+p)*3+1;
+          x.fillStyle=`hsla(${hue},80%,70%,${rng(seed*11+p)*0.4+0.1})`;
+          x.fillRect(px,py,sz,sz);
+        }
+        return cv.toDataURL();
+      }
+      let IMAGES=[makeImg(30,1),makeImg(180,2),makeImg(200,3),makeImg(45,4),makeImg(280,5),makeImg(160,6),makeImg(340,7),makeImg(80,8),makeImg(220,9)];
+
+      // --- Stages ---
+      const STAGES=[
+        {name:'THIẾT LẬP KHỐI NGUỒN',sub:'Genesis Init'},
+        {name:'KẾT NỐI CHUỖI KHỐI',sub:'Chain Link'},
+        {name:'ĐỒNG BỘ DỮ LIỆU',sub:'Data Sync'},
+        {name:'XÁC THỰC NÔNG SẢN',sub:'Crop Verify'},
+        {name:'QUÉT CHỨNG NHẬN',sub:'Cert Scan'},
+        {name:'PHÂN TÍCH AI',sub:'AI Analysis'},
+        {name:'BẢO MẬT LEDGER',sub:'Secure Ledger'},
+        {name:'KÍCH HOẠT NODE',sub:'Node Activate'},
+        {name:'SẴN SÀNG VẬN HÀNH',sub:'System Ready'}
+      ];
+
+      const stageNum=document.getElementById('stage-num');
+      const stageName=document.getElementById('stage-name');
+      const stageSub=document.getElementById('stage-sub');
+      const panelImg=document.getElementById('intro-panel-img');
+      const dataFill=document.getElementById('intro-data-fill');
+      const dataPct=document.getElementById('intro-data-pct');
+      const statusLbl=document.getElementById('intro-status-lbl');
+      const introApp=document.getElementById('intro-app');
+      const flash=document.getElementById('intro-flash');
+      const lifeScreen=document.getElementById('life-screen');
+      const huds=[...Array(7)].map((_,i)=>document.getElementById('h'+i));
+
+      let cur=0;
+      panelImg.src=IMAGES[0];
+
+      // Dynamic scan keyframe — reads actual frame height (works on all screen sizes)
+      function initScanAnim(){
+        const fw=document.getElementById('frame-wrap');
+        const sl=document.getElementById('intro-scan-line');
+        if(!fw||!sl)return;
+        const fh=fw.offsetHeight||310;
+        let kf=document.getElementById('_scan_kf');
+        if(!kf){kf=document.createElement('style');kf.id='_scan_kf';document.head.appendChild(kf);}
+        kf.textContent=`@keyframes intro-scan{from{top:2px}to{top:${fh-4}px}}`;
+        sl.style.animation='none';
+        sl.offsetHeight;
+        sl.style.animation='intro-scan 1s linear forwards';
+      }
+      // Initialize on load and on resize (orientation change)
+      requestAnimationFrame(initScanAnim);
+      window.addEventListener('resize',initScanAnim);
+
+      // Slice base image 3x3 grid
+      const baseImg = new Image();
+      baseImg.src = "/static/intro_base.png";
+      baseImg.onload = () => {
+        try {
+          const w = baseImg.naturalWidth / 3;
+          const h = baseImg.naturalHeight / 3;
+          const sliced = [];
+          for (let r = 0; r < 3; r++) {
+            for (let c = 0; c < 3; c++) {
+              const cv = document.createElement('canvas');
+              cv.width = w;
+              cv.height = h;
+              const ctxS = cv.getContext('2d');
+              ctxS.drawImage(baseImg, c * w, r * h, w, h, 0, 0, w, h);
+              sliced.push(cv.toDataURL());
+            }
+          }
+          if (sliced.length === 9) {
+            IMAGES = sliced;
+            panelImg.src = IMAGES[cur];
+          }
+        } catch (e) {
+          console.error("Lỗi cắt ảnh intro:", e);
+        }
+      };
+
+      function next(){
+        if(cur>=STAGES.length-1){finishIntro();return;}
+        cur++;
+        const s=STAGES[cur];
+        stageNum.textContent=`STAGE 0${cur+1} / 09`;
+        stageName.textContent=s.name;stageSub.textContent=s.sub;
+        panelImg.src=IMAGES[cur];
+        const pct=Math.round(((cur+1)/STAGES.length)*100);
+        dataFill.style.width=pct+'%';
+        dataPct.textContent=pct+'%';
+        huds.forEach((h,i)=>{h.style.width=Math.min(100,Math.random()*100+cur*10)+'%';});
+        statusLbl.textContent=s.sub.toUpperCase();
+        
+        // Reset and trigger laser scan — compute frame height dynamically for mobile
+        const scanLine = document.getElementById('intro-scan-line');
+        const fw = document.getElementById('frame-wrap');
+        if (scanLine && fw) {
+          const fh = fw.offsetHeight;
+          // Inject a dynamic keyframe matching the actual rendered frame height
+          let kfStyle = document.getElementById('_scan_kf');
+          if (!kfStyle) { kfStyle = document.createElement('style'); kfStyle.id='_scan_kf'; document.head.appendChild(kfStyle); }
+          kfStyle.textContent = `@keyframes intro-scan{from{top:2px}to{top:${fh-4}px}}`;
+          scanLine.style.animation = 'none';
+          scanLine.offsetHeight; // trigger reflow
+          scanLine.style.animation = 'intro-scan 1s linear forwards';
+        }
+      }
+
+      // Auto-advance stages (1000ms per stage, total 9 seconds for 9 stages)
+      let stageTimer=setInterval(()=>{next();},1000);
+
+      function finishIntro(){
+        clearInterval(stageTimer);
+        clearInterval(rainInterval);
+        statusLbl.textContent='LIFE ACTIVATED';
+        statusLbl.classList.add('alive');
+        // Flash effect
+        flash.style.opacity='1';
+        setTimeout(()=>{flash.style.opacity='0';},120);
+        setTimeout(()=>{
+          introApp.classList.add('hidden');
+          lifeScreen.classList.add('show');
+        },400);
+      }
+
+      // Skip & Enter handlers
+      document.getElementById('intro-skip').addEventListener('click',function(){
+        clearInterval(stageTimer);
+        clearInterval(rainInterval);
+        dismissIntro();
+      });
+
+      document.getElementById('enter-btn').addEventListener('click',function(){
+        dismissIntro();
+      });
+
+      function dismissIntro(){
+        sessionStorage.setItem(INTRO_FLAG,'1');
+        
+        // Cybernetic flash burst
+        flash.style.background = '#1CCFB0'; // cyan highlight flash
+        flash.style.opacity = '1';
+        
+        // Animate life screen contents scaling up and out
+        gsap.to("#life-screen", {
+          duration: 0.6,
+          scale: 1.15,
+          opacity: 0,
+          y: -20,
+          ease: "power2.inOut"
+        });
+        
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+          appContainer.classList.remove('intro-hidden');
+          
+          // Smoothly fade out the overlay entirely
+          gsap.to("#intro-overlay", {
+            duration: 0.8,
+            opacity: 0,
+            ease: "power2.out",
+            onComplete: () => {
+              overlay.style.display = 'none';
+            }
+          });
+          
+          // Fade down flash
+          gsap.to("#intro-flash", {
+            duration: 0.5,
+            opacity: 0,
+            ease: "power2.out"
+          });
+          
+          // GSAP intro animation for the main app UI
+          gsap.fromTo(".app-container", 
+            { opacity: 0, scale: 0.96 }, 
+            { duration: 1.0, opacity: 1, scale: 1, ease: "power4.out" }
+          );
+          
+          // Stagger header and logo
+          gsap.fromTo("header", 
+            { y: -30, opacity: 0 }, 
+            { duration: 0.8, y: 0, opacity: 1, ease: "power3.out", delay: 0.1 }
+          );
+          
+          // Stagger nav buttons
+          gsap.fromTo(".nav-btn", 
+            { y: -15, opacity: 0 }, 
+            { duration: 0.6, y: 0, opacity: 1, stagger: 0.06, ease: "power2.out", delay: 0.3 }
+          );
+          
+          // Stagger current tab content cards
+          gsap.fromTo(".tab-content.active > *", 
+            { y: 20, opacity: 0 }, 
+            { duration: 0.8, y: 0, opacity: 1, stagger: 0.08, ease: "power3.out", delay: 0.5 }
+          );
+          
+        }, 150);
+      }
+    })();
+    </script>
+
+    <!-- CYBERPUNK SUCCESS MODAL -->
+    <div id="cyber-success-modal-overlay">
+        <div class="cyber-modal">
+            <!-- Corner Accents -->
+            <div class="cyber-modal-accent c-top-left"></div>
+            <div class="cyber-modal-accent c-top-right"></div>
+            <div class="cyber-modal-accent c-bottom-left"></div>
+            <div class="cyber-modal-accent c-bottom-right"></div>
+            
+            <button class="cyber-modal-close" id="cyber-modal-close-btn" title="Đóng">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <!-- Left Side: Tech Circle Checkmark -->
+            <div class="cyber-modal-left">
+                <div class="tech-circle-wrapper">
+                    <div class="tech-circle-outer"></div>
+                    <div class="tech-circle-inner">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div class="tech-shield-badge">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side: Details & Actions -->
+            <div class="cyber-modal-right">
+                <div>
+                    <h3 class="cyber-modal-title" id="cyber-modal-title">CẬP NHẬT THÀNH CÔNG!</h3>
+                    <p class="cyber-modal-subtitle" id="cyber-modal-subtitle">
+                        Thông tin vận chuyển đã được ghi nhận và lưu lên Blockchain của Quýt Hồng Lai Vung.
+                    </p>
+                    
+                    <div class="cyber-modal-details">
+                        <div class="cyber-detail-row">
+                            <span class="cyber-detail-label">
+                                <i class="fa-solid fa-box"></i> Mã lô hàng:
+                            </span>
+                            <span class="cyber-detail-value lot-highlight" id="cyber-modal-lot-id">QL-01012</span>
+                        </div>
+                        <div class="cyber-detail-row">
+                            <span class="cyber-detail-label">
+                                <i class="fa-solid fa-clock"></i> Thời gian:
+                            </span>
+                            <span class="cyber-detail-value" id="cyber-modal-time">10:15 AM - 15/10/2025</span>
+                        </div>
+                        <div class="cyber-detail-row">
+                            <span class="cyber-detail-label">
+                                <i class="fa-solid fa-shield-halved"></i> Trạng thái:
+                            </span>
+                            <span class="cyber-verify-badge" id="cyber-modal-status">
+                                Đã xác thực trên Blockchain <i class="fa-solid fa-circle-check"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="cyber-modal-actions">
+                        <button class="btn cyber-btn-view" id="cyber-modal-btn-view">
+                            <i class="fa-solid fa-paper-plane"></i> XEM CHI TIẾT
+                        </button>
+                        <button class="btn cyber-btn-continue" id="cyber-modal-btn-continue">
+                            TIẾP TỤC <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Decorative bottom line & gem -->
+                    <div class="cyber-modal-bottom-decor">
+                        <div class="cyber-decor-line"></div>
+                        <i class="fa-solid fa-gem cyber-decor-gem"></i>
+                        <div class="cyber-decor-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CYBERPUNK FAILURE MODAL -->
+    <div id="cyber-failure-modal-overlay">
+        <div class="cyber-modal failure">
+            <!-- Corner Accents -->
+            <div class="cyber-modal-accent c-top-left"></div>
+            <div class="cyber-modal-accent c-top-right"></div>
+            <div class="cyber-modal-accent c-bottom-left"></div>
+            <div class="cyber-modal-accent c-bottom-right"></div>
+            
+            <button class="cyber-modal-close" id="cyber-failure-modal-close-btn" title="Đóng">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <!-- Left Side: Tech Circle Warning -->
+            <div class="cyber-modal-left">
+                <div class="tech-circle-wrapper">
+                    <div class="tech-circle-outer"></div>
+                    <div class="tech-circle-inner">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <div class="tech-shield-badge">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side: Details & Actions -->
+            <div class="cyber-modal-right">
+                <div>
+                    <h3 class="cyber-modal-title" id="cyber-failure-modal-title" style="color: var(--error-red);">CẬP NHẬT THẤT BẠI!</h3>
+                    <p class="cyber-modal-subtitle" id="cyber-failure-modal-subtitle">
+                        Đã xảy ra lỗi trong quá trình xử lý giao dịch lên hệ thống.
+                    </p>
+                    
+                    <div class="cyber-modal-details" style="border-color: rgba(255, 23, 68, 0.15);">
+                        <div class="cyber-detail-row">
+                            <span class="cyber-detail-label">
+                                <i class="fa-solid fa-bug"></i> Chi tiết lỗi:
+                            </span>
+                            <span class="cyber-detail-value" id="cyber-failure-modal-details-val" style="color: var(--error-red); font-size: 0.9rem; word-break: break-all; max-height: 120px; overflow-y: auto; width: 100%;"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="cyber-modal-actions">
+                        <button class="btn cyber-btn-continue" id="cyber-failure-modal-btn-close" style="width: 100%; border-color: rgba(255, 23, 68, 0.3); color: #ffffff;">
+                            ĐÓNG PHẢN HỒI <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Decorative bottom line & gem -->
+                    <div class="cyber-modal-bottom-decor">
+                        <div class="cyber-decor-line"></div>
+                        <i class="fa-solid fa-gem cyber-decor-gem"></i>
+                        <div class="cyber-decor-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT -->
+    <script src="/static/js/app.js?v=1.3.0"></script>
+</body>
+</html>
+

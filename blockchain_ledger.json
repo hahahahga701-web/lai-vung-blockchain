@@ -1,0 +1,479 @@
+[
+    {
+        "index": 0,
+        "timestamp": 1779345500.2741797,
+        "transactions": [
+            {
+                "info": "Genesis Block - He thong truy xuat nguon goc Quyt Hong Lai Vung"
+            }
+        ],
+        "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "nonce": 28,
+        "hash": "00538c08e6782e1065c25dc39b332bb65485c72c2c05b622c34b350cc4f3dd83"
+    },
+    {
+        "index": 1,
+        "timestamp": 1779345514.9074173,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST99",
+                "stage": "FARMER_STAGE",
+                "data_hash": "475cb9a49cff115c092b744ba12fbb688969628415bf22e42608e59dfc01645c",
+                "timestamp": "2026-05-21 13:38:34"
+            }
+        ],
+        "previous_hash": "00538c08e6782e1065c25dc39b332bb65485c72c2c05b622c34b350cc4f3dd83",
+        "nonce": 292,
+        "hash": "0001fe9495cd6425d391906bd1179aafd110723aa1fa1ebc05ff3354351f25b0"
+    },
+    {
+        "index": 2,
+        "timestamp": 1779345616.024923,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST99",
+                "stage": "FARMER_STAGE",
+                "data_hash": "475cb9a49cff115c092b744ba12fbb688969628415bf22e42608e59dfc01645c",
+                "timestamp": "2026-05-21 13:40:16"
+            }
+        ],
+        "previous_hash": "0001fe9495cd6425d391906bd1179aafd110723aa1fa1ebc05ff3354351f25b0",
+        "nonce": 81,
+        "hash": "008608057d71c398825496127362b5554a702b033a8a4a6e14773ae8bc94a351"
+    },
+    {
+        "index": 3,
+        "timestamp": 1779345616.0412176,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST99",
+                "stage": "TRANSPORT_STAGE",
+                "data_hash": "500318f6a11c4500db175f78cf77e8ecfc47ad58931566f58d205b9df671caba",
+                "timestamp": "2026-05-21 13:40:16"
+            }
+        ],
+        "previous_hash": "008608057d71c398825496127362b5554a702b033a8a4a6e14773ae8bc94a351",
+        "nonce": 685,
+        "hash": "009b06459872824933074c78eb6511d46fb6188f2328fac7310e8c8d60a7448b"
+    },
+    {
+        "index": 4,
+        "timestamp": 1779345616.0641205,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST99",
+                "stage": "DISTRIBUTOR_STAGE",
+                "data_hash": "c6bc3d10e3e537b5a6f17fbd2986ec2ad52291d52d88aefbe16c0302adc5de87",
+                "timestamp": "2026-05-21 13:40:16"
+            }
+        ],
+        "previous_hash": "009b06459872824933074c78eb6511d46fb6188f2328fac7310e8c8d60a7448b",
+        "nonce": 981,
+        "hash": "0052a6cdb7c940c2e442626dd4b6f81e70821763489267a2770af8528ded2160"
+    },
+    {
+        "index": 5,
+        "timestamp": 1779345749.2558384,
+        "transactions": [
+            {
+                "lot_id": "HP-123",
+                "stage": "FARMER_STAGE",
+                "data_hash": "39e7f520686a21941375106cbaa755f4fbe061c2311d5a555913c70f2799539a",
+                "timestamp": "2026-05-21 13:42:29"
+            }
+        ],
+        "previous_hash": "0052a6cdb7c940c2e442626dd4b6f81e70821763489267a2770af8528ded2160",
+        "nonce": 155,
+        "hash": "00d53ab47aa46421bd8c49f61c3a95aa0936df29ac95d90b66da614d17ce4c40"
+    },
+    {
+        "index": 6,
+        "timestamp": 1779345819.3574886,
+        "transactions": [
+            {
+                "lot_id": "HP-123",
+                "stage": "TRANSPORT_STAGE",
+                "data_hash": "db9824c07c2bc7d80396b7df4d6a21e2df6b8b7c0acd8d2856b1f7966d3c4646",
+                "timestamp": "2026-05-21 13:43:39"
+            }
+        ],
+        "previous_hash": "00d53ab47aa46421bd8c49f61c3a95aa0936df29ac95d90b66da614d17ce4c40",
+        "nonce": 72,
+        "hash": "007bb2bb14a14dbe0945420ccb222520156c1a0a5417429decdb6f6f659c7d8f"
+    },
+    {
+        "index": 7,
+        "timestamp": 1779345855.887373,
+        "transactions": [
+            {
+                "lot_id": "HP-123",
+                "stage": "DISTRIBUTOR_STAGE",
+                "data_hash": "d3555b12ae83a80b8827f3ba8b0704007f66a8adc214635c27e84f490cd69d29",
+                "timestamp": "2026-05-21 13:44:15"
+            }
+        ],
+        "previous_hash": "007bb2bb14a14dbe0945420ccb222520156c1a0a5417429decdb6f6f659c7d8f",
+        "nonce": 133,
+        "hash": "008039f23bc3b7ac6c6c75728259955d6f54c9fdc2ce10eead1967532eff13b5"
+    },
+    {
+        "index": 8,
+        "timestamp": 1779346728.4113438,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST99",
+                "stage": "FARMER_STAGE",
+                "data_hash": "475cb9a49cff115c092b744ba12fbb688969628415bf22e42608e59dfc01645c",
+                "timestamp": "2026-05-21 13:58:48"
+            }
+        ],
+        "previous_hash": "008039f23bc3b7ac6c6c75728259955d6f54c9fdc2ce10eead1967532eff13b5",
+        "nonce": 50,
+        "hash": "0000a6cc748c4fda57aa5b04e154175686aac84c8592b9fab4baa34eb21cca17"
+    },
+    {
+        "index": 9,
+        "timestamp": 1779346728.4269664,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST99",
+                "stage": "TRANSPORT_STAGE",
+                "data_hash": "500318f6a11c4500db175f78cf77e8ecfc47ad58931566f58d205b9df671caba",
+                "timestamp": "2026-05-21 13:58:48"
+            }
+        ],
+        "previous_hash": "0000a6cc748c4fda57aa5b04e154175686aac84c8592b9fab4baa34eb21cca17",
+        "nonce": 180,
+        "hash": "00a963c11ae9c07ca555a871e1723022473ed69d9a77a46cf5469eab03b8edf1"
+    },
+    {
+        "index": 10,
+        "timestamp": 1779346728.4442437,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST99",
+                "stage": "DISTRIBUTOR_STAGE",
+                "data_hash": "c6bc3d10e3e537b5a6f17fbd2986ec2ad52291d52d88aefbe16c0302adc5de87",
+                "timestamp": "2026-05-21 13:58:48"
+            }
+        ],
+        "previous_hash": "00a963c11ae9c07ca555a871e1723022473ed69d9a77a46cf5469eab03b8edf1",
+        "nonce": 610,
+        "hash": "005a1b0f46862df5907adcd51e7afc52ab98d2ea1db74feff5711b178714df57"
+    },
+    {
+        "index": 11,
+        "timestamp": 1779346831.3037646,
+        "transactions": [
+            {
+                "lot_id": "HP-124",
+                "stage": "FARMER_STAGE",
+                "data_hash": "a6852419c74cc5fa32473bc468355d022844e439565086176e5723ab1b5e9ba0",
+                "timestamp": "2026-05-21 14:00:31"
+            }
+        ],
+        "previous_hash": "005a1b0f46862df5907adcd51e7afc52ab98d2ea1db74feff5711b178714df57",
+        "nonce": 395,
+        "hash": "00dfbbda66a1da854a00504d2f907b1513909c4c0e4f0297853f867b6cab464a"
+    },
+    {
+        "index": 12,
+        "timestamp": 1779350442.360717,
+        "transactions": [
+            {
+                "lot_id": "HP-124",
+                "stage": "TRANSPORT_STAGE",
+                "data_hash": "c454ecc36b3d16029e9da550fed3fbb33be0fba9a1f2d942198e06d807e69133",
+                "timestamp": "2026-05-21 15:00:42"
+            }
+        ],
+        "previous_hash": "00dfbbda66a1da854a00504d2f907b1513909c4c0e4f0297853f867b6cab464a",
+        "nonce": 158,
+        "hash": "000380ee71742282d78a7b37176e8cdf91bebc6950d91ba3edfbd6629f48a2c4"
+    },
+    {
+        "index": 13,
+        "timestamp": 1779350465.2389874,
+        "transactions": [
+            {
+                "lot_id": "HP-124",
+                "stage": "TRANSPORT_STAGE",
+                "data_hash": "c454ecc36b3d16029e9da550fed3fbb33be0fba9a1f2d942198e06d807e69133",
+                "timestamp": "2026-05-21 15:01:05"
+            }
+        ],
+        "previous_hash": "000380ee71742282d78a7b37176e8cdf91bebc6950d91ba3edfbd6629f48a2c4",
+        "nonce": 174,
+        "hash": "0012fe129464fbf418bd888c4f8318dd89cda7dc012a85f40e576a7d27f21429"
+    },
+    {
+        "index": 14,
+        "timestamp": 1779350505.9309192,
+        "transactions": [
+            {
+                "lot_id": "HP-124",
+                "stage": "DISTRIBUTOR_STAGE",
+                "data_hash": "f56d95864cb5f9211e2cc4cb16a0510e66b06da1420c8c428e5ecc17082d4d5b",
+                "timestamp": "2026-05-21 15:01:45"
+            }
+        ],
+        "previous_hash": "0012fe129464fbf418bd888c4f8318dd89cda7dc012a85f40e576a7d27f21429",
+        "nonce": 666,
+        "hash": "00a078a01214858ed964fa24cf4cd179ebf6b0a083cdc76f16e0af324bf92199"
+    },
+    {
+        "index": 15,
+        "timestamp": 1779351525.548831,
+        "transactions": [
+            {
+                "lot_id": "HMLQ-123",
+                "stage": "FARMER_STAGE",
+                "data_hash": "80551aa3f41adc8166ae485ff9ebd4bc13d3cad8805e3d4fde1ec984828199cd",
+                "timestamp": "2026-05-21 15:18:45"
+            }
+        ],
+        "previous_hash": "00a078a01214858ed964fa24cf4cd179ebf6b0a083cdc76f16e0af324bf92199",
+        "nonce": 582,
+        "hash": "001161f5f29770a42b31b20a66e0103bafc2414fb725d0d8b754eb5c5c9fe555"
+    },
+    {
+        "index": 16,
+        "timestamp": 1779355976.935595,
+        "transactions": [
+            {
+                "lot_id": "HP-125",
+                "stage": "FARMER_STAGE",
+                "data_hash": "f1408f3383f4321c11b45b81357f11ba66214c97ca4ab6d9ed6bb2bce46a7eaa",
+                "timestamp": "2026-05-21 16:32:56"
+            }
+        ],
+        "previous_hash": "001161f5f29770a42b31b20a66e0103bafc2414fb725d0d8b754eb5c5c9fe555",
+        "nonce": 152,
+        "hash": "0044a21eaa27e7a4022d68f63d563b012a2246edffda4832b84325d7f3087ef5"
+    },
+    {
+        "index": 17,
+        "timestamp": 1779356335.196003,
+        "transactions": [
+            {
+                "lot_id": "HP-1242",
+                "stage": "FARMER_STAGE",
+                "data_hash": "eb769baa8bc30947f1dda4b4748f9c9c911bc1bbbb77f8edc686b6c62b497575",
+                "timestamp": "2026-05-21 16:38:55"
+            }
+        ],
+        "previous_hash": "0044a21eaa27e7a4022d68f63d563b012a2246edffda4832b84325d7f3087ef5",
+        "nonce": 64,
+        "hash": "00685a1a124377cbf07e7784fbf9371e9ceb126507a9d6c32ced7c9b002e6101"
+    },
+    {
+        "index": 18,
+        "timestamp": 1779361300.3020093,
+        "transactions": [
+            {
+                "lot_id": "QL-TEST-001",
+                "stage": "FARMER_STAGE",
+                "data_hash": "4334c6bf33aa8a36830cc557bd2c023e31df8de647af90443f59b21deecdcf3f",
+                "timestamp": "2026-05-21 18:01:40"
+            }
+        ],
+        "previous_hash": "00685a1a124377cbf07e7784fbf9371e9ceb126507a9d6c32ced7c9b002e6101",
+        "nonce": 161,
+        "hash": "00ee57c521937740f57a703dbf8fbcb5824fe5e6e4aa4089c5f350c0e789ecc6"
+    },
+    {
+        "index": 19,
+        "timestamp": 1779361357.6891189,
+        "transactions": [
+            {
+                "lot_id": "QL-001",
+                "stage": "FARMER_STAGE",
+                "data_hash": "ad597f0b8d041bece5d21c90b025bdbf9326ee00957e15260a22cd600e01d8e5",
+                "timestamp": "2026-05-21 18:02:37"
+            }
+        ],
+        "previous_hash": "00ee57c521937740f57a703dbf8fbcb5824fe5e6e4aa4089c5f350c0e789ecc6",
+        "nonce": 369,
+        "hash": "00d2c2c2de2308056c029505e143fab591600f657c0ba3f623a4e3df64faf173"
+    },
+    {
+        "index": 20,
+        "timestamp": 1779366589.5134547,
+        "transactions": [
+            {
+                "lot_id": "TEST-001",
+                "stage": "FARMER_STAGE",
+                "data_hash": "e2abdeb254d354f262de3847de13760d6489fe58918e349f872449b59fc31c5b",
+                "timestamp": "2026-05-21 19:29:49"
+            }
+        ],
+        "previous_hash": "00d2c2c2de2308056c029505e143fab591600f657c0ba3f623a4e3df64faf173",
+        "nonce": 194,
+        "hash": "005e352fbc61914f5fae7cfe81fc816cb06a637f41cf22ef2b2d5e61a305fc32"
+    },
+    {
+        "index": 21,
+        "timestamp": 1779366815.9809837,
+        "transactions": [
+            {
+                "lot_id": "FIXED-TEST-001",
+                "stage": "FARMER_STAGE",
+                "data_hash": "f207ee1b88da84c3bacff3458439201260b56c68347fa978d9b7e7b3c4db2686",
+                "timestamp": "2026-05-21 19:33:35"
+            }
+        ],
+        "previous_hash": "005e352fbc61914f5fae7cfe81fc816cb06a637f41cf22ef2b2d5e61a305fc32",
+        "nonce": 71,
+        "hash": "006e10df50f3c9635e11230bbe15431955890bf2a4975961ad49d21abdd3eed8"
+    },
+    {
+        "index": 22,
+        "timestamp": 1779496672.2284706,
+        "transactions": [
+            {
+                "lot_id": "HP-12438",
+                "stage": "FARMER_STAGE",
+                "data_hash": "cd5706c63843fbd453633c060c508dc8a969b8615464a3b404ac230492dff9fa",
+                "timestamp": "2026-05-23 07:37:52"
+            }
+        ],
+        "previous_hash": "006e10df50f3c9635e11230bbe15431955890bf2a4975961ad49d21abdd3eed8",
+        "nonce": 131,
+        "hash": "007305840fe7f10ecb1fe15bd40715b9a47eb78da7a7dec0fc702f8e14a88147"
+    },
+    {
+        "index": 23,
+        "timestamp": 1779508741.8135955,
+        "transactions": [
+            {
+                "lot_id": "QL-010121",
+                "stage": "FARMER_STAGE",
+                "data_hash": "23df60fea3f42964d49914e5632712aff71e82362de587d17ce68c858ca583a3",
+                "timestamp": "2026-05-23 10:59:01"
+            }
+        ],
+        "previous_hash": "007305840fe7f10ecb1fe15bd40715b9a47eb78da7a7dec0fc702f8e14a88147",
+        "nonce": 45,
+        "hash": "00faa51dfdcc527ed70b83af5df7bee19b8938b6b65338d3e988ffb0a8f69ef5"
+    },
+    {
+        "index": 24,
+        "timestamp": 1779543077.6065774,
+        "transactions": [
+            {
+                "lot_id": "TEST-LOT-001",
+                "stage": "FARMER",
+                "data_hash": "00de2360e2cc41632ce0e7996d5e93a65a72fd21b343b73157ba39b06477f204",
+                "timestamp": "2026-05-23 20:31:17"
+            }
+        ],
+        "previous_hash": "00faa51dfdcc527ed70b83af5df7bee19b8938b6b65338d3e988ffb0a8f69ef5",
+        "nonce": 96,
+        "hash": "00181125893f0b57117328c8a78fe624e7abfc6552a6464da0e2b002ac64ee39"
+    },
+    {
+        "index": 25,
+        "timestamp": 1779858323.960004,
+        "transactions": [
+            {
+                "lot_id": "QL-00189",
+                "stage": "FARMER_STAGE",
+                "data_hash": "45c8df2a440967302423ce7aac2bbadfb33d2d48cd270f95b808517860702597",
+                "timestamp": "2026-05-27 12:05:23"
+            }
+        ],
+        "previous_hash": "00181125893f0b57117328c8a78fe624e7abfc6552a6464da0e2b002ac64ee39",
+        "nonce": 1020,
+        "hash": "008dd5237134546688b40fe4dba58b3b55b263c6d7f299d36233d853727bf428"
+    },
+    {
+        "index": 26,
+        "timestamp": 1779858364.0285327,
+        "transactions": [
+            {
+                "lot_id": "QL-001892",
+                "stage": "FARMER_STAGE",
+                "data_hash": "750dbd84e411e7067379a9486ec2e571cfaed10f544378514ab1752ffebc7862",
+                "timestamp": "2026-05-27 12:06:04"
+            }
+        ],
+        "previous_hash": "008dd5237134546688b40fe4dba58b3b55b263c6d7f299d36233d853727bf428",
+        "nonce": 1244,
+        "hash": "009a1941ff82956368c0b9943cb2baabd684e01ccf4936cbaa1830c7a710b43c"
+    },
+    {
+        "index": 27,
+        "timestamp": 1779858547.517947,
+        "transactions": [
+            {
+                "lot_id": "QL-001892Ư",
+                "stage": "FARMER_STAGE",
+                "data_hash": "7202f8b37009af5085cd520dc47c821dbba03ed1a0fd37a55284c168fe388297",
+                "timestamp": "2026-05-27 12:09:07"
+            }
+        ],
+        "previous_hash": "009a1941ff82956368c0b9943cb2baabd684e01ccf4936cbaa1830c7a710b43c",
+        "nonce": 412,
+        "hash": "000fd598c299d99a43feb4a08778dfbf3b1e495e4f2f516b8b44108f391671cf"
+    },
+    {
+        "index": 28,
+        "timestamp": 1779858760.5445065,
+        "transactions": [
+            {
+                "lot_id": "QL-010128",
+                "stage": "FARMER_STAGE",
+                "data_hash": "4b47a7a627d7ac862e21c52ac1fefdc725b060127d424d138c2aa892bbd863fc",
+                "timestamp": "2026-05-27 12:12:40"
+            }
+        ],
+        "previous_hash": "000fd598c299d99a43feb4a08778dfbf3b1e495e4f2f516b8b44108f391671cf",
+        "nonce": 213,
+        "hash": "0000867b93f727d01ad9237617eca96ebdcb44c39eeed9a7e53611e9a2c59f15"
+    },
+    {
+        "index": 29,
+        "timestamp": 1780122959.161145,
+        "transactions": [
+            {
+                "lot_id": "QL-01",
+                "stage": "FARMER_STAGE",
+                "data_hash": "53ddaae2f627250d4d7fe2475ad2758228240043ea317d9d1712cf283ea3935d",
+                "timestamp": "2026-05-30 13:35:59"
+            }
+        ],
+        "previous_hash": "0000867b93f727d01ad9237617eca96ebdcb44c39eeed9a7e53611e9a2c59f15",
+        "nonce": 190,
+        "hash": "00ae83ebd8ab8b41341a0c7b7fbc666908a5ecd3e9d94eff8cf18d03868e612d"
+    },
+    {
+        "index": 30,
+        "timestamp": 1780480615.4613893,
+        "transactions": [
+            {
+                "lot_id": "LOT-456",
+                "stage": "FARMER_STAGE",
+                "data_hash": "84be904282865662c3187fa4b4142128a259902a57f29e170f9529716c4ff7bd",
+                "timestamp": "2026-06-03 16:56:55"
+            }
+        ],
+        "previous_hash": "00ae83ebd8ab8b41341a0c7b7fbc666908a5ecd3e9d94eff8cf18d03868e612d",
+        "nonce": 185,
+        "hash": "007819d54bf5353521a4b2daea0ecc60ed43548bb6f3843aad0d2960a1bab86e"
+    },
+    {
+        "index": 31,
+        "timestamp": 1780480741.5750208,
+        "transactions": [
+            {
+                "lot_id": "LOT-456",
+                "stage": "TRANSPORT_STAGE",
+                "data_hash": "65170be707b2bc17176398dc01570790b312cf9162ca1ed5c6510f4c286957d4",
+                "timestamp": "2026-06-03 16:59:01"
+            }
+        ],
+        "previous_hash": "007819d54bf5353521a4b2daea0ecc60ed43548bb6f3843aad0d2960a1bab86e",
+        "nonce": 131,
+        "hash": "000e78546af73ffaa83cdbda3348701479b439c5a5f47e4adf15639a92e530d3"
+    }
+]
