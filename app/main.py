@@ -24,6 +24,7 @@ if sys.platform.startswith("win"):
 from fastapi import FastAPI, HTTPException, Body
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
@@ -201,6 +202,16 @@ app = FastAPI(
     title="Lai Vung Mandarin Traceability System",
     description="Hệ thống truy xuất nguồn gốc Quýt Hồng Lai Vung - Blockchain & AI Hybrid",
     version="1.0.0"
+)
+
+# ============= CORS CONFIGURATION =============
+# Enable CORS for all origins (necessary for frontend-backend communication)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Khởi tạo DB và Blockchain
