@@ -156,6 +156,45 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.classList.add("active");
     }
     
+    // ============= UTILITY TO PARSE AND SHOW API ERRORS =============
+    function parseAndShowAPIError(defaultTitle, data) {
+        let errorMessage = "Đã xảy ra lỗi không xác định.";
+        let errorDetailString = "";
+
+        if (data) {
+            if (data.detail !== undefined) {
+                if (typeof data.detail === "string") {
+                    errorMessage = data.detail;
+                } else if (Array.isArray(data.detail)) {
+                    errorMessage = "Dữ liệu đầu vào không đúng cấu hình yêu cầu.";
+                    errorDetailString = data.detail.map(err => {
+                        const field = err.loc ? err.loc.join('.') : 'trường';
+                        return `${field}: ${err.msg}`;
+                    }).join("\n• ");
+                } else if (typeof data.detail === "object" && data.detail !== null) {
+                    errorMessage = data.detail.message || "Dữ liệu không hợp lệ";
+                    if (data.detail.errors && Array.isArray(data.detail.errors)) {
+                        errorDetailString = data.detail.errors.join("\n• ");
+                    }
+                }
+            } else {
+                if (data.message) {
+                    errorMessage = data.message;
+                }
+                if (data.errors && Array.isArray(data.errors)) {
+                    errorDetailString = data.errors.join("\n• ");
+                }
+            }
+        }
+
+        if (errorDetailString) {
+            showFailureModal(defaultTitle, errorMessage, errorDetailString);
+        } else {
+            showFailureModal(defaultTitle, errorMessage, (data && data.message) || "Kiểm tra lại kết nối hoặc dữ liệu.");
+        }
+    }
+
+    
     // ============= LIGHT/DARK MODE TOGGLE =============
     const themeToggleBtn = document.getElementById("theme-toggle-btn");
     const themeText = document.getElementById("theme-text");
@@ -1226,13 +1265,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     farmerForm.parentElement.insertBefore(notification, farmerForm);
                     setTimeout(() => notification.remove(), 3000);
                 } else {
-                    // ✓ HIỂN THỊ LỖI XÁC THỰC CHI TIẾT
-                    if (data.errors && Array.isArray(data.errors)) {
-                        const errorList = data.errors.join("\n• ");
-                        showFailureModal("CẬP NHẬT THẤT BẠI!", data.message, errorList);
-                    } else {
-                        showFailureModal("CẬP NHẬT THẤT BẠI!", "Đã xảy ra lỗi không xác định.", data.detail || data.message);
-                    }
+                    parseAndShowAPIError("CẬP NHẬT THẤT BẠI!", data);
                 }
             })
             .catch(err => showFailureModal("LỖI KẾT NỐI API!", "Không thể kết nối đến máy chủ.", err.message));
@@ -1350,13 +1383,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     loadLotsForTransporter();
                 } else {
-                    // ✓ HIỂN THỊ LỖI XÁC THỰC CHI TIẾT
-                    if (data.errors && Array.isArray(data.errors)) {
-                        const errorList = data.errors.join("\n• ");
-                        showFailureModal("CẬP NHẬT THẤT BẠI!", data.message, errorList);
-                    } else {
-                        showFailureModal("CẬP NHẬT THẤT BẠI!", "Đã xảy ra lỗi không xác định.", data.detail || data.message);
-                    }
+                    parseAndShowAPIError("CẬP NHẬT THẤT BẠI!", data);
                 }
             })
             .catch(err => showFailureModal("LỖI KẾT NỐI API!", "Không thể kết nối đến máy chủ.", err.message));
@@ -1443,13 +1470,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     loadLotsForDistributor();
                 } else {
-                    // ✓ HIỂN THỊ LỖI XÁC THỰC CHI TIẾT
-                    if (data.errors && Array.isArray(data.errors)) {
-                        const errorList = data.errors.join("\n• ");
-                        showFailureModal("CẬP NHẬT THẤT BẠI!", data.message, errorList);
-                    } else {
-                        showFailureModal("CẬP NHẬT THẤT BẠI!", "Đã xảy ra lỗi không xác định.", data.detail || data.message);
-                    }
+                    parseAndShowAPIError("CẬP NHẬT THẤT BẠI!", data);
                 }
             })
             .catch(err => showFailureModal("LỖI KẾT NỐI API!", "Không thể kết nối đến máy chủ.", err.message));
