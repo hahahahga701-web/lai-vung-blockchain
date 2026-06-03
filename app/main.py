@@ -1,6 +1,15 @@
 import os
 import sys
 import io
+import logging
+import traceback
+
+# Setup logging to help with debugging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Safe encoding for console output on Windows
 if sys.platform.startswith("win"):
@@ -347,10 +356,11 @@ def submit_farmer_data(data: FarmerSubmitInput):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"[ERROR] Exception in submit_farmer_data: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in submit_farmer_data for lot {data.lot_id}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail={"success": False, "message": "Loi trong xu ly giao dich", "error": str(e)}
+        )
 
 @app.post("/api/transporter/update")
 def update_transport_data(data: TransporterUpdateInput):
@@ -410,7 +420,11 @@ def update_transport_data(data: TransporterUpdateInput):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in update_transport_data for lot {data.lot_id}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail={"success": False, "message": "Loi trong xu ly giao dich", "error": str(e)}
+        )
 
 @app.post("/api/distributor/update")
 def update_distributor_data(data: DistributorUpdateInput):
@@ -473,7 +487,11 @@ def update_distributor_data(data: DistributorUpdateInput):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in update_distributor_data for lot {data.lot_id}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail={"success": False, "message": "Loi trong xu ly giao dich", "error": str(e)}
+        )
 
 @app.api_route("/api/trace/{lot_id}", methods=["GET", "HEAD"])
 def trace_lot(lot_id: str):
@@ -698,7 +716,11 @@ def tamper_database(data: TamperInput):
             "message": f"Đã hack đổi cột '{data.field}' của lô {data.lot_id} thành '{data.value}' trong SQLite thành công!"
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error in tamper_database for lot {data.lot_id}: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail={"success": False, "message": "Loi trong xu ly du lieu", "error": str(e)}
+        )
 
 @app.api_route("/product/{lot_id}", methods=["GET", "HEAD"])
 def product_lot_html(lot_id: str):

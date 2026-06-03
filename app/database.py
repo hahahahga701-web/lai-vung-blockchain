@@ -2,7 +2,11 @@ import sqlite3
 import os
 import json
 
-DB_PATH = "blockchain_trace.db"
+# Use absolute path for database file to ensure it works on both local and Render
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(os.path.dirname(APP_DIR), "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+DB_PATH = os.path.join(DATA_DIR, "blockchain_trace.db")
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)

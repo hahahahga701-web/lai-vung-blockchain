@@ -4,7 +4,11 @@ import json
 import os
 from app.git_helper import auto_commit_blockchain
 
-LEDGER_PATH = "blockchain_ledger.json"
+# Use absolute path for blockchain ledger file to ensure it works on both local and Render
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(os.path.dirname(APP_DIR), "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+LEDGER_PATH = os.path.join(DATA_DIR, "blockchain_ledger.json")
 
 class Block:
     def __init__(self, index: int, timestamp: float, transactions: list, previous_hash: str, nonce: int = 0, hash_val: str = ""):
@@ -134,21 +138,25 @@ class Blockchain:
 
     def save_chain(self):
         """Lưu toàn bộ blockchain vào file JSON."""
-        with open(LEDGER_PATH, 'w', encoding='utf-8') as f:
-            chain_data = [block.to_dict() for block in self.chain]
-            json.dump(chain_data, f, indent=4, ensure_ascii=False)
-        
-        # 🔗 Tự động commit vào git để lưu vĩnh viễn
         try:
-            success, message = auto_commit_blockchain(LEDGER_PATH)
+            with open(LEDGER_PATH, 'w', encoding='utf-8') as f:
+                chain_data = [block.to_dict() for block in self.chain]
+                json.dump(chain_data, f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            print(f"[ERROR] Lỗi lưu blockchain file: {e}")
+            raise
+        
+        # 🔗 Tự động commit vào git để lưu vĩnh viễn (optional - không block nếu fail)
+        try:
+            # Get relative path for git command
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            relative_path = os.path.relpath(LEDGER_PATH, project_root)
+            success, message = auto_commit_blockchain(relative_path, cwd=project_root)
             if success:
                 try:
                     print(f"[Git] {message}")
                 except Exception:
-                    try:
-                        print(f"[Git] {message.encode('ascii', errors='replace').decode('ascii')}")
-                    except Exception:
-                        pass
+                    pass
         except Exception as e:
             try:
                 print(f"[Git Warning] Không thể commit: {e}")
