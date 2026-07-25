@@ -475,5 +475,20 @@
         "previous_hash": "007819d54bf5353521a4b2daea0ecc60ed43548bb6f3843aad0d2960a1bab86e",
         "nonce": 131,
         "hash": "000e78546af73ffaa83cdbda3348701479b439c5a5f47e4adf15639a92e530d3"
+    },
+    {
+        "index": 32,
+        "timestamp": 1784947168.8413193,
+        "transactions": [
+            {
+                "lot_id": "ROLLUP_BATCH",
+                "stage": "MERKLE_ROLLUP_1",
+                "data_hash": "478e570e3254b3d3edd160f86b37617abba7fdb88118a4bd6c54aab4c453739e",
+                "timestamp": "2026-07-25 09:39:28"
+            }
+        ],
+        "previous_hash": "000e78546af73ffaa83cdbda3348701479b439c5a5f47e4adf15639a92e530d3",
+        "nonce": 514,
+        "hash": "00129fa38914cff8392d84d95a7f74cfeb0e78ad41f538183802b3e48aed6e7d"
     }
 ]
